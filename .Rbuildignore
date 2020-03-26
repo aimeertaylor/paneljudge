@@ -1,2 +1,4 @@
 ^paneljudge\.Rproj$
 ^\.Rproj\.user$
+^misc$
+^data_raw$
