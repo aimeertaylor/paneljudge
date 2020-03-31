@@ -47,6 +47,12 @@ any(apply(amp_frqs, 2, is.factor))
 # Rename "Genotype.1" by "Allele.1" etc.
 colnames(amp_frqs) <- gsub("Genotype", "Allele", colnames(amp_frqs))
 
+# Rename countries
+amp_frqs$Country <- gsub("columbia", "Colombia", amp_frqs$Country)
+amp_frqs$Country <- gsub("mali", "Mali", amp_frqs$Country)
+amp_frqs$Country <- gsub("senegal", "Senegal", amp_frqs$Country)
+amp_frqs$Country <- gsub("frenchguiana", "French Guiana", amp_frqs$Country)
+
 # Separate amplicon data (marker regions) from country specific data (allele frequencies)
 markers = amp_frqs[!duplicated(amp_frqs$Amplicon_name), c('Amplicon_name','Chr','Start','Stop')]
 rownames(markers) = markers$Amplicon_name
@@ -89,7 +95,7 @@ Alleles = names(amp_frqs)[grepl('Allele', names(amp_frqs))]
 ordered_markers = rownames(markers)
 frequencies = plyr::dlply(amp_frqs, 'Country', function(x){
   rownames(x) = x$Amplicon_name
-  y = x[ordered_markers,] # Order amplicons according to chrom and pos
+  y <- x[ordered_markers, Alleles] # Order amplicons according to chrom and pos
   # Check order of alleles per amplicon and re-order if necessary
   if(!all(apply(y[, Alleles], 1, function(z){all(z == cummin(z))}))){
     y <- t(apply(y[, Alleles], 1, function(f) sort(as.numeric(f), decreasing = T))) # Order frequencies as numeric
@@ -98,5 +104,5 @@ frequencies = plyr::dlply(amp_frqs, 'Country', function(x){
 })
 
 # Save example data
-save(markers, frequencies, file = '../data/panel_markers_and_frequencies.RData')
-
+save(markers, file = '../data/markers.RData')
+save(frequencies, file = '../data/frequencies.RData')
