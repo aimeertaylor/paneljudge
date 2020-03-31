@@ -17,6 +17,8 @@
 #' @param epsilon genotyping error (probability of miscall).
 #' @param rho recombination rate in probability of break point per base pair.
 #' @return Ys simulated dated.
+#' @examples
+#' simulate_data(fs = frequencies$Colombia, gendist = markers$dt, k = 10, r = 0.5)
 #'
 #' @references Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
 #'   Estimating relatedness between malaria parasites. Genetics, 212(4),
