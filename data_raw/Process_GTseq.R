@@ -100,7 +100,7 @@ frequencies = plyr::dlply(amp_frqs, 'Country', function(x){
   if(!all(apply(y[, Alleles], 1, function(z){all(z == cummin(z))}))){
     y <- t(apply(y[, Alleles], 1, function(f) sort(as.numeric(f), decreasing = T))) # Order frequencies as numeric
   }
-  return(y)
+  return(as.matrix(y))
 })
 
 # Save example data
