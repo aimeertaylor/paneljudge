@@ -1,0 +1,290 @@
+---
+title: "Example panel performance"
+author: "Aimee R Taylor"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{paneljudge_freestanding_example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: ref.bib
+csl: vancouver.csl
+---
+
+# Introduction 
+
+In this vignette, to illustrate the functionality of the R package **paneljudge**, we inspect the performance of an example panel using example marker allele frequencies based on *Plasmodium falciparum* data from Colombia. Example frequencies are distributed with the package; data used to estimate them are not.   
+
+First we provide a summary of the example panel in terms of its marker count, and its markers' positions, diversities, effective cardinalities and cardinalities. These quantities provide a rough idea of how informative the panel is regarding relatedness inference @taylor2019. Second, we simulate and fit data under the hidden Markov model (HMM) described in @taylor2019. The second step provides a more direct summary of how informative the panel is regarding relatedness inference. 
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE,
+  fig.width=7, fig.height=4, fig.fullwidth = TRUE 
+)
+default_par <- par() # Save default par to pass to on.exit() at end
+```
+
+```{r setup}
+devtools::load_all() # Remove this line once complete
+library(paneljudge) # Load and attach 
+rm(list = ls()) # For cleanliness 
+set.seed(1) # For reproducibility
+```
+
+# Marker summaries
+
+For relatedness inference, panels with many, evenly spaced and highly diverse markers are informative @taylor2019.  
+
+```{r marker count}
+m <- nrow(markers) # Number of markers
+num_chr <- length(unique(markers$chrom)) # Number of chromosomes
+max_chr <- max(markers$chrom) # Max. number of chromosomes
+av_marker_length <- mean(markers$length) # Average marker length
+sd_marker_length <- sd(markers$length) # Standard deviation of marker length
+
+# Do any marker starts preceed the stop of the previous marker? 
+overlap <- (sapply(unique(markers$chrom), function(chr){ # For each chromosome
+  ind <- markers$chrom == chr # chromosom indicators 
+  any(markers$Start[ind][-1] - markers$Stop[ind][-sum(ind)] < 0) 
+}))
+```
+
+The example panel has `r m` markers distributed across `r num_chr` of `r max_chr` chromosomes: 
+
+```{r position plot}
+# Amplicon position plot
+par(mar = c(5.1,4.1,1,1))
+plot(markers$pos, markers$chrom, pch = "|", las = 1,
+     ylab = 'Chromosome', xlab = 'Chromosomal position (base pair)')
+
+for(chr in unique(markers$chrom)){
+  
+  # Add chromosome lengths
+  segments(x0 = 0, x1 = chr_lengths[chr], y0 = chr, y1 = chr)
+  
+  # Add applicon positions (barely visible on whole genome scale)
+  ind <- markers$chrom == chr
+  segments(x0 = markers$Start[ind], x1 = markers$Stop[ind],
+           y0 = chr, y1 = chr, col = 'white')
+}
+```
+
+The markers in the example panel are microhaplotypes: short, highly diverse regions of the genome whose length can be spanned by a single amplicon. The white marks in the above plot mark the region spanned by each (marker/amplicon? - check). They are barely visible due to their small size (average `r round(av_marker_length)` base pairs; standard deviation: `r round(sd_marker_length)` base pairs). Unfortunately, some markers are very close together (minimum distance between marker mid-points `r min(markers$dt)` base pairs). However, none overlap: 
+
+```{r overlap}
+writeLines(sprintf("Do any marker starts preceed the stop of the previous marker? %s", any(overlap)))
+```
+
+```{r marker length}
+par(mfrow = c(1,2), mar = c(5.1,4.1,1,1))
+hist(markers$length, col = 'gray', main = ' ', las = 1,  
+     xlab = 'Marker length', ylab = 'Marker count')
+hist(markers$dt, col = 'gray', main = ' ', las = 1, 
+     xlab = 'Distance between marker mid-points', ylab = 'Marker count')
+```
+
+Next we compute marker diversity, effective cardinality, cardinality and maximum potential diversity. Using **paneljudge** functions, marker diversities and effective cardinalities were calculated from example marker allele frequencies without accounting for the fact that they are estimates (e.g. without correcting for finite sample sizes or considering uncertainty). Marker cardinality is either a theoretical maximum (e.g. $2^{3}$ for a microhaplotype spanning three biallelic single nucleotide polymorphisms), or an observed count. Here, the observed count is calculated (i.e. the per-marker count of alleles with non-zero frequency). Maximum diversity is a function of cardinality assuming equifrequent alleles. 
+
+```{r, echo = T}
+# Compute marker summaries using paneljudge functions 
+diversities <- compute_diversities(frequencies$Colombia)
+eff_cardinalities <- compute_eff_cardinalities(frequencies$Colombia)
+
+# Per-marker allele count:
+cardinalities <- apply(frequencies$Colombia, 1, function(x){sum(x > 0)}) 
+
+# Compute max. diversity as a function of cardinality 
+max_diversities <- sapply(1:max(cardinalities), function(x){1-sum(rep(1/x, x)^2)})
+```
+
+Marker diversity is the probability of picking two different alleles per marker. For an outbred diploid, it is equal to heterozygosity. Highly diverse markers are markers with many equifrequent alleles. For relatedness inference, the potential informativeness of a marker thus scales with its allele count (its cardinality). Alleles are rarely equifrequent, however. Effective cardinality is an allele count that accounts for inequifrequent alleles: it is equal to cardinality if all alleles are equifrequent; otherwise, it is less. Across the `r m` markers of the example panel, marker diversity and effective cardinality range from `r paste(round(range(diversities),2), collapse = ' to ')` and `r paste(round(range(eff_cardinalities),2), collapse = ' to ')`, respectively:
+
+```{r position plot coloured, fig.height=10}
+par(mfrow = c(2,1), mar = c(5.1,4.1,1,1))
+
+# Transform markers summaries to [0,1] for plotting
+eff_cardinalities_01 <- (eff_cardinalities - min(eff_cardinalities)) / diff(range(eff_cardinalities))
+diversities_01 <- (diversities - min(diversities)) / diff(range(diversities))
+
+# Function to map transformed marker summaries onto colour
+col_mapper <- function(num){
+  y <- colorRamp(c('blue','yellow','red'))(num)
+  z <- rgb(y[,1], y[,2], y[,3], maxColorValue = 255)
+  return(z)
+}
+
+# Marker position coloured by diversity
+plot(markers$pos, markers$chrom, pch = "|", las = 1,
+     ylab = 'Chromosome', xlab = 'Chromosomal position (base pair)',
+     col = col_mapper(diversities_01))
+# Add chromosome lengths
+for(chr in unique(markers$chrom)){
+  segments(x0 = 0, x1 = chr_lengths[chr], y0 = chr, y1 = chr)
+}
+legend('bottomright', bty = 'n',
+       pch = '_', col = col_mapper(seq(1,0,length.out = m)),
+       legend = round(c(max(diversities), rep(NA, m-2), min(diversities)),2),
+       inset = 0.05, y.intersp = 0.05)
+text(x = 2687330, y = 4.7, labels = 'Diversity', srt = 90)
+
+# Marker position coloured by cardinality
+plot(markers$pos, markers$chrom, pch = "|", las = 1,
+     ylab = 'Chromosome', xlab = 'Chromosomal position (base pair)',
+     col = col_mapper(eff_cardinalities_01))
+# Add chromosome lengths
+for(chr in unique(markers$chrom)){
+  segments(x0 = 0, x1 = chr_lengths[chr],y0 = chr, y1 = chr)
+}
+legend('bottomright', bty = 'n',
+       pch = '_', col = col_mapper(seq(1,0,length.out = m)),
+       legend = round(c(max(eff_cardinalities), rep(NA, m-2), min(eff_cardinalities)),2),
+       inset = 0.05, y.intersp = 0.05)
+text(x = 2687330, y = 4.7, labels = 'Effective cardinality', srt = 90)
+```
+
+
+Both marker diversity and effective cardinality are measures of marker informativeness regarding relatedness inference. Personally, I find effective cardinality more intuitive because potential effective cardinality scales linearly with cardinality, whereas potential diversity does not. The average effective cardinality multiplied by marker count, `r round(mean(eff_cardinalities) * m)`, provides a rough summary of the informativeness of the entire panel. 
+
+
+```{r}
+par(mfrow = c(1,2), mar = c(5.1,4.1,1,1))
+
+# Summary plots of marker summaries
+plot(NULL, bty = 'n', las = 1,
+     ylim = range(cardinalities), xlim = range(cardinalities),
+     ylab = 'Effective cardinality (effective allele count)',
+     xlab = 'Cardinality (observed allele count)')
+polygon(x = c(1:max(cardinalities), max(cardinalities):1),
+        y = c(rep(1, max(cardinalities)), max(cardinalities):1),
+        col = 'gray', border = NA)
+points(x = cardinalities, y = eff_cardinalities, pch = "_")
+lines(x = 1:max(cardinalities), y = 1:max(cardinalities), pch = "_", col = 'blue')
+legend('topleft', lty = 1, col = c('black', 'blue'), inset = 0.01,
+       legend = c('Observed', 'Maximum poss. given cardinality'),
+       cex = 0.5)
+
+plot(NULL, bty = 'n', yaxt = 'n',
+     ylim = c(0, 1), xlim = range(cardinalities),
+     ylab = 'Diversity', xlab = 'Cardinality (observed allele count)')
+polygon(x = c(1:max(cardinalities), max(cardinalities):1),
+        y = c(max_diversities, rep(0, max(cardinalities))),
+        col = 'gray', border = NA)
+
+axis(side = 2, at = max_diversities[c(1,2,3,4,5,12)], las = 1,
+     labels = format(max_diversities[c(1,2,3,4,5,12)], digits = 2, drop0trailing = F),
+     cex.axis = 0.75, tck = -0.02)
+# axis(side = 2, at = max_diversities[seq(1,12,2)], las = 1,
+#      labels = rep('', length(seq(1,12,2))),
+#      cex.axis = 0.4, tck = 0.02, adj = 0.09)
+points(x = cardinalities, y = diversities, pch = "_")
+lines(x = 1:max(cardinalities), y = max_diversities, pch = "_", col = 'blue')
+legend('topleft', lty = 1, col = c('black', 'blue'), inset = 0.01,
+       legend = c('Observed', 'Maximum poss. given cardinality'),
+       cex = 0.5)
+```
+
+# Simulated data  
+
+Using the example panel and marker allele frequencies, for various data-generating values of relatedness, $r$, we first simulate some data on a pair of haploid genotypes; second estimate $r$ (and a switch rate parameter, $k$, whose data-generating value is fixed in this vignette); and third compute 95\% confidence intervals (CIs) around the estimates $\hat{r}$ and $\hat{k}$:
+
+```{r, echo = T}
+#=============================================================
+# Simulate n genotype pairs for various r and fixed k
+#=============================================================
+# Data-generating relatedness values (named s.t. mle_CIs are named)
+rs <- c("0.01"=0.01, "0.25"=0.25, "0.50"=0.50, "0.75"=0.75, "0.99"=0.99)
+k <- 5 # Data-generating switch rate parameter value
+n <- 5 # Number of pairs to per simulate per r in rs
+fs <- frequencies$Colombia # example marker allele frequencies
+distances <- markers$dt # distances between marker mid-points
+
+mle_CIs <- lapply(rs, function(r) {
+  sapply(1:n, function(i) {
+
+    # First simulate genotype pair
+    Ys <- simulate_data(fs, gendist = distances, k, r)
+
+    # Second, estimate r and k
+    krhat <- estimate_r_and_k(frequencies = fs, distances, Ys)
+
+    # Third, compute confidence intervals (CIs)
+    CIs <- compute_r_and_k_CIs(frequencies = fs, distances, khat = krhat['khat'], rhat = krhat['rhat'])
+
+    # End of function
+    return(c(krhat['rhat'], CIs['rhat',]))
+  })
+})
+```
+
+For each data-generating value of relatedness we simulated `r n` haploid genotype pairs. The 95\% CIs around the relatedness estimates show that, despite considerable uncertainty, the panel is informative regarding relatedness inference across a range of data-generating values (an uninformative panel would have 95\% CIs that span the entire 0 to 1 range): 
+
+```{r}
+# Plot CIs
+par(mfrow = c(1, length(rs)), mar = c(0,0,0,0), oma = c(4,5,1,1))
+for(r in names(mle_CIs)){
+  rCIs <- mle_CIs[[as.character(r)]]
+  rhat_order <- sort.int(rCIs['rhat',], index.return = T)$ix
+  plot(NULL, ylim = c(0,1), xlim = c(1,n),
+       ylab = '', xlab = '', yaxt = 'n')
+  polygon(x = c(1:n, n:1),
+          y = c(rCIs['2.5%', rhat_order], rev(rCIs['97.5%', rhat_order])),
+          col = 'gray', border = NA)
+  points(y = rCIs['rhat', rhat_order], x = 1:n, col = 'black', pch = 20)
+  abline(h = as.numeric(r))
+}
+mtext(side = 1, outer = T,
+      text = expression("Sample pair index per data-generating"~italic(r)), line = 3)
+axis(side = 2, outer = T, at = rs, las = 1)
+mtext(side = 2, outer = T, text = expression(hat(italic(r))), line = 3)
+legend('center', lwd = 1, legend = expression("data-generating"~italic(r)), bty = 'n', cex = 0.75)
+```
+
+The variation in $\hat{r}$ around the data-generating $r$ (black horizontal line) is partly due to limited panel informativeness and partly due to the finite length of the genome, i.e. Mendelian sampling @hill2011. Whole genome simulation is required to partition these two sources of variation (see note below).
+
+Instead of plotting the CIs directly, we can plot the CI widths as a indicator of informativeness (an uninformative CI having width one). Since `r n` haploid genotype pairs were simulated per data-generating value of $r$, we can also compute and plot the root mean square error (RMSE) as an measure of informativeness.
+
+```{r, echo = T}
+CI_widths <- sapply(mle_CIs, function(x){ # Calculate CI widths
+  x["97.5%",] - x["2.5%",]
+})
+
+RMSEs <- sapply(names(mle_CIs), function(r){ # Calculate RMSEs 
+  sqrt(mean((mle_CIs[[r]] - as.numeric(r))^2))
+})
+```
+
+
+```{r}
+par(mfrow = c(1,2), mar = c(5.1,4.1,1,1), cex.lab = 0.75)
+
+# Plot CI lengths (box plots or violin plots)
+boxplot(x = CI_widths,
+        ylim = c(0,0.5),
+        xlab = expression("Data-generating"~italic(r)),
+        ylab = "95% confidence interval width")
+
+# Plot RMSEs
+plot(y = RMSEs, x = rs, type = 'b', pch = 20,
+     ylim = c(0,0.5), xlim = c(0,1),
+     xlab = expression("Data-generating"~italic(r)),
+     ylab = expression("Root mean square error given data-generating"~italic(r)))
+```
+
+## Mendelian sampling 
+
+Relatedness, $r$, is defined as a probability of identity-by-descent (IBD) averaged over the genome @taylor2019. It differs to realised relatedness, which is the fraction of the genome that is IBD, due to the finite length of the genome (i.e. due to Mendelian sampling @hill2011): for a genome of finite length many realised relatednesses are compatible with a given probability of IBD, meaning that there will always be some variance in realised relatedness around $r$. Consequently, the RMSE of $\hat{r}$ compared to the data-generating $r$ (and the width of a CI computed using the parametric bootstrap) asymptotes to some small but non-zero value when more and more markers are typed @taylor2019. 
+
+Considering a panel with a finite marker count, variation in $\hat{r}$ around the data-generating $r$ is partly due to the informativeness of the panel and partly due to Mendelian sampling @hill2011. To set-aside variation due to Mendelian sampling and thus focus entirely on panel performance, we could compare $\hat{r}$ to realised relatedness (e.g. when we compute RMSE). However, this is computationally expensive as it requires whole genome simulation:
+
+1. simulate a haploid genotype pair across the entire genome given a data-generating value of $r$;
+2. compute realised relatedness by averaging over latent IBD states; 
+3. infer relatedness using only data simulated at the panel markers;
+4. compare $\hat{r}$ to realised relatedness. 
+
+
+# References
+
+<!-- see https://www.zotero.org/styles for citation styles -->
