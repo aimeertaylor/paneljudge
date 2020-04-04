@@ -41,6 +41,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## References 
 [1] Taylor et al. Genetics 212.4 (2019): 1337-1351.
+
 [2] Schaffner et al. Malaria journal 17.1 (2018): 196.
 
 <!--- ## Acknowledgements 
