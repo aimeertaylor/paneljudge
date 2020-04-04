@@ -32,6 +32,7 @@
 #' @param rinit relatedness parameter value used to initialise loglikelihood
 #'   optimization.
 #' @importFrom doRNG %dorng%
+#' @importFrom foreach %dopar%
 #' @return Confidence interval bounds around input switch rate parameter, k, and
 #'   relatedness parameter, r.
 #' @examples
@@ -48,6 +49,7 @@
 #' @references Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
 #'   Estimating relatedness between malaria parasites. Genetics, 212(4),
 #'   pp.1337-1351.
+#' @export
 ###########################################################################
 
 compute_r_and_k_CIs <- function(frequencies, distances, khat, rhat,

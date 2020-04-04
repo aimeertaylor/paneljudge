@@ -23,6 +23,7 @@
 #' @references Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
 #'   Estimating relatedness between malaria parasites. Genetics, 212(4),
 #'   pp.1337-1351.
+#' @export
 ###########################################################################
 
 simulate_data <- function(fs, gendist, k, r, epsilon = 0.001, rho = 7.4 * 10^(-7)){

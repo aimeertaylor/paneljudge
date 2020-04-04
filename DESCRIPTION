@@ -16,4 +16,10 @@ LinkingTo:
     Rcpp
 Imports: 
     Rcpp,
-    doParallel
+    doParallel,
+    doRNG,
+    foreach
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

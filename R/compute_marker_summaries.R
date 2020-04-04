@@ -1,8 +1,3 @@
-compute_cardinalities <- function(frequencies){
-  cardinalities <- apply(frequencies, 1, function(x){sum(x > 0)})
-  return(cardinalities)
-}
-
 ###########################################################################
 #' Compute marker effective cardinalities
 #'
@@ -25,6 +20,7 @@ compute_cardinalities <- function(frequencies){
 #' @references Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
 #'   Estimating relatedness between malaria parasites. Genetics, 212(4),
 #'   pp.1337-1351.
+#' @export
 ###########################################################################
 compute_eff_cardinalities <- function(frequencies){
   eff_cardinalities = 1/rowSums(frequencies^2)
@@ -54,6 +50,7 @@ compute_eff_cardinalities <- function(frequencies){
 #' @references Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
 #'   Estimating relatedness between malaria parasites. Genetics, 212(4),
 #'   pp.1337-1351.
+#' @export
 ###########################################################################
 compute_diversities <- function(frequencies){
   diversities = 1-rowSums(frequencies^2)
