@@ -57,6 +57,9 @@ amp_frqs$Country <- gsub("frenchguiana", "French Guiana", amp_frqs$Country)
 markers = amp_frqs[!duplicated(amp_frqs$Amplicon_name), c('Amplicon_name','Chr','Start','Stop')]
 rownames(markers) = markers$Amplicon_name
 
+# Add marker length
+markers$length <- markers$Stop - markers$Start
+
 # Add the middle position of each marker region
 markers$pos = apply(markers[,c('Start','Stop')], 1, function(x)median(as.numeric(x)))
 
