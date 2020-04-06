@@ -4,31 +4,33 @@
 \alias{compute_diversities}
 \title{Compute marker diversities}
 \usage{
-compute_diversities(frequencies)
+compute_diversities(fs)
 }
 \arguments{
-\item{frequencies}{ndata (marker count) by Kmax (max cardinality over m
-markers) matrix if Kt < Kmax for any t in 1:m, then fs[t,1:Kt] in (0,1) &
-fs[t,(Kt+1):Kmax] = 0 Example: if Kt = 2 < Kmax = 4 then fs[t,] might look
-like [0.2, 0.7, 0, 0].}
+\item{fs}{Matrix of marker allele frequencies, i.e. the \eqn{ft}s in [1].
+Specifically, a \eqn{m} by \eqn{Kmax} matrix, where \eqn{m} is the marker
+count and \eqn{Kmax} is the maximum cardinality (per-marker allele count)
+observed over all \eqn{m} markers. If, for any \eqn{t = 1,...,m}, the
+maximum cardinality exceeds that of the \eqn{t}-th marker (i.e. if
+\eqn{Kmax > Kt}), then all \code{fs[t,1:Kt]} are in (0,1) and all
+\code{fs[t,(Kt+1):Kmax]} are zero. For example, if \eqn{Kt = 2} and
+\eqn{Kmax = 4} then \code{fs[t,]} might look like \code{[0.3, 0.7, 0, 0]}.}
 }
 \value{
-Diversities, \eqn{h_t}, for \eqn{t = 1,\ldots,m}
-  markers.
+Diversities for \eqn{t = 1,\ldots,m} markers.
 }
 \description{
-Given a matrix frequencies \code{compute_diversities()} returns the
-diversities, \eqn{h_t}, for \eqn{t = 1,\ldots,m} markers. Each
-calculated as described in Taylor et al. 2009
-without accounting for sample bias:
-\deqn{h_t^{'} = \dfrac{1}{h_t}}
+Given a matrix of marker allele frequencies, \code{compute_diversities()} returns the
+diversities of \eqn{t = 1,...,m} markers, where \eqn{m} is the marker count.
+Each diversity is calculated as described in [1], i.e.
+without correcting for finite sample sizes or considering uncertainty.
 }
 \examples{
 compute_diversities(fs = frequencies$Colombia)
 
 }
 \references{
-Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
+\enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
   Estimating relatedness between malaria parasites. Genetics, 212(4),
-  pp.1337-1351.
+  pp.1337-1351.}
 }
