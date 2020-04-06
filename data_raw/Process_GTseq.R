@@ -87,9 +87,9 @@ all(sapply(unique(markers$chrom), function(chr){
 }))
 
 # Compute distances between middle positions
-markers$dt <- c(diff(markers$pos), Inf)
+markers$distances <- c(diff(markers$pos), Inf)
 pos_change_chrom <- 1 + which(diff(markers$chrom) != 0) # chromosome switch-points
-markers$dt[pos_change_chrom-1] <- Inf
+markers$distances[pos_change_chrom-1] <- Inf
 
 # Extract allele names
 Alleles = names(amp_frqs)[grepl('Allele', names(amp_frqs))]
