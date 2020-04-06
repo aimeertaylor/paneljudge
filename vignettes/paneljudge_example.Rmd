@@ -72,7 +72,7 @@ for(chr in unique(markers$chrom)){
 }
 ```
 
-The markers in the example panel are microhaplotypes: short, highly diverse regions of the genome whose length can be spanned by a single amplicon. The white marks in the above plot mark the region spanned by each (marker/amplicon? - check). They are barely visible due to their small size (average `r round(av_marker_length)` base pairs; standard deviation: `r round(sd_marker_length)` base pairs). Unfortunately, some markers are very close together (minimum distance between marker mid-points `r min(markers$dt)` base pairs). However, none overlap: 
+The markers in the example panel are microhaplotypes: short, highly diverse regions of the genome whose length can be spanned by a single amplicon. The white marks in the above plot mark the region spanned by each (marker/amplicon? - check). They are barely visible due to their small size (average `r round(av_marker_length)` base pairs; standard deviation: `r round(sd_marker_length)` base pairs). Unfortunately, some markers are very close together (minimum distance between marker mid-points `r min(markers$distances)` base pairs). However, none overlap: 
 
 ```{r overlap}
 writeLines(sprintf("Do any marker starts preceed the stop of the previous marker? %s", any(overlap)))
@@ -82,7 +82,7 @@ writeLines(sprintf("Do any marker starts preceed the stop of the previous marker
 par(mfrow = c(1,2), mar = c(5.1,4.1,1,1))
 hist(markers$length, col = 'gray', main = ' ', las = 1,  
      xlab = 'Marker length', ylab = 'Marker count')
-hist(markers$dt, col = 'gray', main = ' ', las = 1, 
+hist(markers$distances, col = 'gray', main = ' ', las = 1, 
      xlab = 'Distance between marker mid-points', ylab = 'Marker count')
 ```
 
@@ -199,7 +199,7 @@ rs <- c("0.01"=0.01, "0.25"=0.25, "0.50"=0.50, "0.75"=0.75, "0.99"=0.99)
 k <- 5 # Data-generating switch rate parameter value
 n <- 5 # Number of pairs to per simulate per r in rs
 fs <- frequencies$Colombia # example marker allele frequencies
-distances <- markers$dt # distances between marker mid-points
+distances <- markers$distances # distances between marker mid-points
 
 mle_CIs <- lapply(rs, function(r) {
   sapply(1:n, function(i) {

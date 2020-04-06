@@ -51,10 +51,10 @@
 #'
 #' @examples
 #' # First stimulate some data
-#' simulated_Ys <- simulate_Ys(fs = frequencies$Colombia, ds = markers$dt, k = 5, r = 0.25)
+#' simulated_Ys <- simulate_Ys(fs = frequencies$Colombia, ds = markers$distances, k = 5, r = 0.25)
 #'
 #' # Second estimate the switch rate parameter, k, and relatedness parameter, r
-#' estimate_r_and_k(fs = frequencies$Colombia, ds = markers$dt, Ys = simulated_Ys)
+#' estimate_r_and_k(fs = frequencies$Colombia, ds = markers$distances, Ys = simulated_Ys)
 #'
 #' @references \enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and
 #'   Buckee, C.O., 2019. Estimating relatedness between malaria parasites.

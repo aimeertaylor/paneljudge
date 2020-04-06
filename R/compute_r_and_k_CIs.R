@@ -49,13 +49,13 @@
 #'
 #' @examples
 #' # First, stimulate some data
-#' simulated_Ys <- simulate_Ys(fs = frequencies$Colombia, ds = markers$dt, k = 5, r = 0.25)
+#' simulated_Ys <- simulate_Ys(fs = frequencies$Colombia, ds = markers$distances, k = 5, r = 0.25)
 #'
 #' # Second, estimate the switch rate parameter, k, and relatedness parameter, r
-#' krhat <- estimate_r_and_k(fs = frequencies$Colombia, ds = markers$dt, Ys = simulated_Ys)
+#' krhat <- estimate_r_and_k(fs = frequencies$Colombia, ds = markers$distances, Ys = simulated_Ys)
 #'
 #' # Third, compute confidence intervals (CIs)
-#' compute_r_and_k_CIs(frequencies$Colombia, markers$dt, khat = krhat['khat'], rhat = krhat['rhat'])
+#' compute_r_and_k_CIs(frequencies$Colombia, markers$distances, khat = krhat['khat'], rhat = krhat['rhat'])
 #'
 #' @references \enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
 #'   Estimating relatedness between malaria parasites. Genetics, 212(4),

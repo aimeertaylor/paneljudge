@@ -44,7 +44,7 @@
 #'   = 2}, both \code{Ys[t,1]} and \code{Ys[t,2]} are either 0 or 1.
 #'
 #' @examples
-#' simulate_Ys(fs = frequencies$Colombia, ds = markers$dt, k = 10, r = 0.5)
+#' simulate_Ys(fs = frequencies$Colombia, ds = markers$distances, k = 10, r = 0.5)
 #'
 #' @references \enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and
 #'   Buckee, C.O., 2019. Estimating relatedness between malaria parasites.
