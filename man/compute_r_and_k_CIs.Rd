@@ -5,23 +5,23 @@
 \title{Compute confidence intervals for relatedness and switch rate parameters}
 \usage{
 compute_r_and_k_CIs(
-  frequencies,
-  distances,
+  fs,
+  ds,
   khat,
   rhat,
   confidence = 95,
   nboot = 100,
-  do_not_use_core_count = 2,
+  core_count = parallel::detectCores() - 1,
   ...
 )
 }
 \arguments{
-\item{frequencies}{ndata (marker count) by Kmax (max cardinality over m
+\item{fs}{ndata (marker count) by Kmax (max cardinality over m
 markers) matrix if Kt < Kmax for any t in 1:m, then fs[t,1:Kt] in (0,1) &
 fs[t,(Kt+1):Kmax] = 0 Example: if Kt = 2 < Kmax = 4 then fs[t,] might look
 like [0.2, 0.7, 0, 0].}
 
-\item{distances}{vector where distances[t] contains the distance between
+\item{ds}{vector where ds[t] contains the distance between
 position t and t+1 or equivalently, gendist[t-1] contains the distance
 between position t-1 and t, for p > 1. s.t. only m-1 first entries of
 gendist are being used.}
@@ -33,8 +33,8 @@ gendist are being used.}
 the CI. Larger values provide a better approximation but CIs will take
 longer to compute.}
 
-\item{do_not_use_core_count}{number of cores to keep free on computer
-(defaults to two)}
+\item{core_count}{number of cores to use to do computation. Set greater than or equal to two for parallel computation.
+Defaults to the number detected on the machine minus one.}
 
 \item{epsilon}{genotyping error (probability of miscall).}
 
@@ -51,8 +51,8 @@ Confidence interval bounds around input switch rate parameter, k, and
   relatedness parameter, r.
 }
 \description{
-For specified confidence (default 95\%), given a matrix of input frequencies
-and a vector of marker distances, a switch rate parameter estimate, khat, and
+For specified confidence (default 95\%), given a matrix of input fs
+and a vector of marker ds, a switch rate parameter estimate, khat, and
 a relatedness parameter estimate, rhat. \code{compute_r_and_k_CIs()} returns
 the confidence intervals around the parameter estimates. Confidence intervals
 are approximate. They are approximated using the parametric bootstrap draws
