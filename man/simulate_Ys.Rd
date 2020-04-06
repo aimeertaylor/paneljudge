@@ -57,7 +57,7 @@ of haploid genotypes \code{simulate_Ys()} returns genotype calls simulated
 under the HMM described in [1].
 }
 \examples{
-simulate_Ys(fs = frequencies$Colombia, ds = markers$dt, k = 10, r = 0.5)
+simulate_Ys(fs = frequencies$Colombia, ds = markers$distances, k = 10, r = 0.5)
 
 }
 \references{
