@@ -27,10 +27,12 @@ devtools::install_github("artaylor85/paneljudge", build_vignettes = TRUE)
 The intended usage of the **paneljudge** package is to judge the performance of a panel of genetic markers designed for relatedness inference. Performance is judged using data simulated under a hidden Markov model described in [1]. The package is very minimal. To see its full range of capabilities, simply load and attach **paneljudge** then read the **paneljudge** vignette accessed via `vignette("paneljudge_example")`. Possible future additions to the package are listed below. If you would like to contribute, see **Contributing** below or email ataylor@hsph.harvard.edu. 
 
 ## Future work
-
+- Modify loglikelihood_cpp notation
+- Add checks, errors and warnings for unexpected input (frequencies etc.) and propagate
 - Add Rshiny plot of marker positions with dynamic annotations: marker name, effective cardinality, diversity etc. 
 - Integrate hmmIBD [2].
 - Consider simulation and inference under an independent model.
+
 
 ## Contributing
 
