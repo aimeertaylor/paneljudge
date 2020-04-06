@@ -20,7 +20,7 @@ maximum cardinality exceeds that of the \eqn{t}-th marker (i.e. if
 Diversities for \eqn{t = 1,\ldots,m} markers.
 }
 \description{
-Given a matrix of marker allele frequencies, \code{compute_diversities()} returns the
+Given a matrix of marker allele frequencies, \code{compute_diversities} returns the
 diversities of \eqn{t = 1,...,m} markers, where \eqn{m} is the marker count.
 Each diversity is calculated as described in [1], i.e.
 without correcting for finite sample sizes or considering uncertainty.

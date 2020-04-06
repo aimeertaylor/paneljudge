@@ -53,7 +53,7 @@ Simulated genotype calls for a pair of haploid genotypes, i.e. the
 \description{
 Given a matrix of marker allele frequencies, a vector of inter-marker
 distances, a relatedness parameter, and a switch rate parameter, for a pair
-of haploid genotypes \code{simulate_Ys()} returns genotype calls simulated
+of haploid genotypes \code{simulate_Ys} returns genotype calls simulated
 under the HMM described in [1].
 }
 \examples{

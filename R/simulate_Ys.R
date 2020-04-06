@@ -3,7 +3,7 @@
 #'
 #' Given a matrix of marker allele frequencies, a vector of inter-marker
 #' distances, a relatedness parameter, and a switch rate parameter, for a pair
-#' of haploid genotypes \code{simulate_Ys()} returns genotype calls simulated
+#' of haploid genotypes \code{simulate_Ys} returns genotype calls simulated
 #' under the HMM described in [1].
 #'
 #' @param fs Matrix of marker allele frequencies, i.e. the \eqn{ft}s in [1].

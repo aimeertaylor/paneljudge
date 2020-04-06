@@ -21,7 +21,7 @@ Effective cardinalities for \eqn{t = 1,\ldots,m} markers.
 }
 \description{
 Given a matrix of marker allele frequencies,
-\code{compute_eff_cardinalities()} returns the effective cardinalites of
+\code{compute_eff_cardinalities} returns the effective cardinalites of
 \eqn{t = 1,...,m} markers, where \eqn{m} is the marker count. Effective
 cardinalities are per-marker allele counts that account for inequifrequenct
 alleles. Each effective cardinality is calculated as described in [1], i.e.

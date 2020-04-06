@@ -3,7 +3,7 @@
 #'
 #' Given a matrix of marker allele frequencies, a vector of inter-marker
 #' distances, and estimates of the relatedness and switch rate parameters,
-#' \code{compute_r_and_k_CIs()} returns confidence interval bounds around the
+#' \code{compute_r_and_k_CIs} returns confidence interval bounds around the
 #' parameter estimates. The default confidence is 95\%. The interval bounds are
 #' approximate. They are generated using parametric bootstrap draws of the
 #' parameter estimates based on genotype calls for haploid genotype pairs
@@ -39,7 +39,7 @@
 #' @param core_count Number of cores to use to do computation.
 #' Set to 2 or more for parallel computation.
 #' Defaults to the number detected on the machine minus one.
-#' @param ... Arguments to be passed to \code{simulate_Ys()} and \code{estimate_r_and_k()}.
+#' @param ... Arguments to be passed to \code{\link{simulate_Ys}} and \code{\link{estimate_r_and_k}}.
 #'
 #' @importFrom doRNG %dorng%
 #' @importFrom foreach %dopar%

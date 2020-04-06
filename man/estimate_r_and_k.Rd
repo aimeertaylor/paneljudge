@@ -67,7 +67,7 @@ Maximum likelihood estimates of the switch rate parameter, \eqn{k},
 \description{
 Given a matrix of marker allele frequencies, a vector of inter-marker
 distances, and a matrix of genotype calls for a pair of haploid genotypes,
-\code{estimate_r_and_k()} returns the maximum likelihood estimates of the
+\code{estimate_r_and_k} returns the maximum likelihood estimates of the
 relatedness parameter, \eqn{r}, and the switch rate parameter, \eqn{k}, under
 the HMM described in [1].
 }
