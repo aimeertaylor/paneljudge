@@ -1,16 +1,16 @@
 ###########################################################################
-#' Compute confidence interval bounds for relatedness and switch rate parameters
+#' Compute confidence intervals for relatedness and switch rate parameters
 #'
 #' Given a matrix of marker allele frequencies, a vector of inter-marker
 #' distances, and estimates of the relatedness and switch rate parameters,
-#' \code{compute_r_and_k_CIs} returns confidence interval bounds around the
-#' parameter estimates. The default confidence is 95\%. The interval bounds are
-#' approximate. They are generated using parametric bootstrap draws of the
-#' parameter estimates based on genotype calls for haploid genotype pairs
-#' simulated under the HMM described in [1] using the input parameter estimates.
-#' The quality of the approximation increases and compute time scales with the
-#' number of parametric bootstrap draws, which are generated in parallel using a
-#' specified number of cores.
+#' \code{compute_r_and_k_CIs} returns confidence intervals around the parameter
+#' estimates. The default confidence is 95\%. The intervals are approximate.
+#' They are generated using parametric bootstrap draws of the parameter
+#' estimates based on genotype calls for haploid genotype pairs simulated under
+#' the HMM described in [1] using the input parameter estimates. The quality of
+#' the approximation increases and compute time scales with the number of
+#' parametric bootstrap draws, which are generated in parallel using a specified
+#' number of cores.
 #'
 #' @param fs Matrix of marker allele frequencies, i.e. the \eqn{ft}s in [1].
 #'   Specifically, a \eqn{m} by \eqn{Kmax} matrix, where \eqn{m} is the marker
@@ -29,22 +29,25 @@
 #'   different markers are also considered infinite, i.e. if the chromosome of
 #'   marker \eqn{t+1} is not equal to the chromosome of \eqn{t}-th marker,
 #'   \code{ds[t] = Inf}.
-#' @param khat Estimate of the switch rate parameter, i.e. estimate of \eqn{k} in [1].
-#' @param rhat Estimate of the relatedness parameter, i.e. estimate of \eqn{r} in [1].
+#' @param khat Estimate of the switch rate parameter, i.e. estimate of \eqn{k}
+#'   in [1].
+#' @param rhat Estimate of the relatedness parameter, i.e. estimate of \eqn{r}
+#'   in [1].
 #' @param confidence Confidence level (percentage) of confidence interval
 #'   (default 95\%).
-#' @param nboot Number of parametric bootstrap draws from which to compute
-#'   the confidence interval bounds. Larger values provide a better approximation
-#'   but prolong computation.
-#' @param core_count Number of cores to use to do computation.
-#' Set to 2 or more for parallel computation.
-#' Defaults to the number detected on the machine minus one.
-#' @param ... Arguments to be passed to \code{\link{simulate_Ys}} and \code{\link{estimate_r_and_k}}.
+#' @param nboot Number of parametric bootstrap draws from which to compute the
+#'   confidence interval. Larger values provide a better approximation but
+#'   prolong computation.
+#' @param core_count Number of cores to use to do computation. Set to 2 or more
+#'   for parallel computation. Defaults to the number detected on the machine
+#'   minus one.
+#' @param ... Arguments to be passed to \code{\link{simulate_Ys}} and
+#'   \code{\link{estimate_r_and_k}}.
 #'
 #' @importFrom doRNG %dorng%
 #' @importFrom foreach %dopar%
 #'
-#' @return Confidence interval bounds around input switch rate parameter, \eqn{k}, and
+#' @return Confidence intervals around input switch rate parameter, \eqn{k}, and
 #'   relatedness parameter, \eqn{r}.
 #'
 #' @examples
@@ -57,9 +60,9 @@
 #' # Third, compute confidence intervals (CIs)
 #' compute_r_and_k_CIs(frequencies$Colombia, markers$distances, khat = krhat['khat'], rhat = krhat['rhat'])
 #'
-#' @references \enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
-#'   Estimating relatedness between malaria parasites. Genetics, 212(4),
-#'   pp.1337-1351.}
+#' @references \enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and
+#'   Buckee, C.O., 2019. Estimating relatedness between malaria parasites.
+#'   Genetics, 212(4), pp.1337-1351.}
 #'
 #' @export
 ###########################################################################
