@@ -12,10 +12,7 @@ compute_r_and_k_CIs(
   confidence = 95,
   nboot = 100,
   do_not_use_core_count = 2,
-  epsilon = 0.001,
-  rho = 7.4 * 10^(-7),
-  kinit = 50,
-  rinit = 0.5
+  ...
 )
 }
 \arguments{
@@ -64,15 +61,14 @@ are generated in parallel using a specifying number of cores. The quality and
 compute time of the approximation scales with nboot.
 }
 \examples{
-
 # First, stimulate some data
-simulated_genotype_pair <- simulate_data(fs = frequencies$Colombia, gendist = markers$dt, k = 5, r = 0.25)
+simulated_Ys <- simulate_Ys(fs = frequencies$Colombia, ds = markers$dt, k = 5, r = 0.25)
 
 # Second, estimate the switch rate parameter, k, and relatedness parameter, r
-krhat <- estimate_r_and_k(frequencies = frequencies$Colombia, distances = markers$dt, Ys = simulated_genotype_pair)
+krhat <- estimate_r_and_k(fs = frequencies$Colombia, ds = markers$dt, Ys = simulated_Ys)
 
 # Third, compute confidence intervals (CIs)
-compute_r_and_k_CIs(frequencies = frequencies$Colombia, distances = markers$dt, khat = krhat['khat'], rhat = krhat['rhat'])
+compute_r_and_k_CIs(frequencies$Colombia, markers$dt, khat = krhat['khat'], rhat = krhat['rhat'])
 
 }
 \references{

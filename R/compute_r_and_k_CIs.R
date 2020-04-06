@@ -36,15 +36,14 @@
 #' @return Confidence interval bounds around input switch rate parameter, k, and
 #'   relatedness parameter, r.
 #' @examples
-#'
 #' # First, stimulate some data
-#' simulated_genotype_pair <- simulate_data(fs = frequencies$Colombia, gendist = markers$dt, k = 5, r = 0.25)
+#' simulated_Ys <- simulate_Ys(fs = frequencies$Colombia, ds = markers$dt, k = 5, r = 0.25)
 #'
 #' # Second, estimate the switch rate parameter, k, and relatedness parameter, r
-#' krhat <- estimate_r_and_k(frequencies = frequencies$Colombia, distances = markers$dt, Ys = simulated_genotype_pair)
+#' krhat <- estimate_r_and_k(fs = frequencies$Colombia, ds = markers$dt, Ys = simulated_Ys)
 #'
 #' # Third, compute confidence intervals (CIs)
-#' compute_r_and_k_CIs(frequencies = frequencies$Colombia, distances = markers$dt, khat = krhat['khat'], rhat = krhat['rhat'])
+#' compute_r_and_k_CIs(frequencies$Colombia, markers$dt, khat = krhat['khat'], rhat = krhat['rhat'])
 #'
 #' @references Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
 #'   Estimating relatedness between malaria parasites. Genetics, 212(4),
@@ -53,8 +52,17 @@
 ###########################################################################
 
 compute_r_and_k_CIs <- function(frequencies, distances, khat, rhat,
-                                confidence = 95, nboot = 100, do_not_use_core_count = 2,
-                                epsilon = 0.001, rho = 7.4 * 10^(-7), kinit = 50, rinit = 0.5){
+                                confidence = 95, nboot = 100, do_not_use_core_count = 2, ...){
+
+  # Retrieve all additional parameters
+  all_params <- list(...)
+
+  # Define a subset of additional parameters to pass to simulate_Ys()
+  # Alternatively, could use R.utils::doCall() with .ignoreUnusedArgs=TRUE
+  # instead of base::do.call(); see call to simulate_Ys() below.
+  sim_params <- all_params
+  sim_params$kinit <- NULL
+  sim_params$rinit <- NULL
 
   # Register available cores in order to run code in parallel
   # Note that packages parallel and foreach are available through doParallel, which is imported
@@ -65,8 +73,8 @@ compute_r_and_k_CIs <- function(frequencies, distances, khat, rhat,
   # %dorng% loops are reproducible whereas %dopar% loops are not,
   # %dorng% returns the whole sequence of RNG seeds as an attribute whereas %dopar% does not.
   rkhats_boot = foreach::foreach(iboot = 1:nboot, .combine = rbind) %dorng% {
-    simulated_genotype_pair <- simulate_data(frequencies, distances, k = khat, r = rhat, epsilon, rho)
-    rkhats_boot <- estimate_r_and_k(frequencies, distances, Ys = simulated_genotype_pair, epsilon, rho, kinit, rinit)
+    simulated_genotype_pair <- do.call(simulate_Ys, args = c(list(frequencies, distances, k = khat, r = rhat), sim_params))
+    rkhats_boot <- estimate_r_and_k(frequencies, distances, Ys = simulated_genotype_pair, ...)
   }
 
   # Calculata CIs as quantiles
