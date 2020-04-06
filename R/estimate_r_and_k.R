@@ -63,6 +63,7 @@
 #'   O'Brien, J. and Rubio, V.R., 2016. Indels, structural variation, and
 #'   recombination drive genomic diversity in Plasmodium falciparum. Genome
 #'   research, 26(9), pp.1288-1299.}
+#'
 #' @export
 ###########################################################################
 estimate_r_and_k <- function(fs, ds, Ys, epsilon = 0.001, rho = 7.4 * 10^(-7), kinit = 50, rinit = 0.5){
