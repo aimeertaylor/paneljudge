@@ -1,28 +1,58 @@
 ###########################################################################
-#' Simulate data on a pair of haploid genotypes
+#' Simulate genotype calls for a pair of haploid genotypes
 #'
-#' For a vector of input frequencies and distances, \code{simulate_data()}
-#' returns simulated data on a pair of haploid genotypes.
+#' Given a matrix of marker allele frequencies, a vector of inter-marker
+#' distances, a relatedness parameter, and a switch rate parameter, for a pair
+#' of haploid genotypes \code{simulate_data()} returns genotype calls simulated
+#' under the HMM described in [1].
 #'
-#' @param fs frequencies. m (marker count) by Kmax (max cardinality over m
-#'   markers) matrix if Kt < Kmax for any t in 1:m, then fs[t,1:Kt] in (0,1) &
-#'   fs[t,(Kt+1):Kmax] = 0 Example: if Kt = 2 < Kmax = 4 then fs[t,] might look
-#'   like [0.2, 0.7, 0, 0].
-#' @param ds distances vector where ds[t] contains the distance
-#'   between t t and t+1 or equivalently, ds[t-1] contains the
-#'   distance between t t-1 and t, for p > 1. s.t. only m-1 first entries
-#'   of ds are being used.
-#' @param k data-generating switch rate parameter.
-#' @param r data-generating relatedness parameter.
-#' @param epsilon genotyping error (probability of miscall).
-#' @param rho recombination rate in probability of break point per base pair.
-#' @return Ys simulated dated.
+#' @param fs Matrix of marker allele frequencies, i.e. the \eqn{ft}s in [1].
+#'   Specifically, a \eqn{m} by \eqn{Kmax} matrix, where \eqn{m} is the marker
+#'   count and \eqn{Kmax} is the maximum cardinality (per-marker allele count)
+#'   observed over all \eqn{m} markers. If, for any \eqn{t = 1,...,m}, the
+#'   maximum cardinality exceeds that of the \eqn{t}-th marker (i.e. if
+#'   \eqn{Kmax > Kt}), then all \code{fs[t,1:Kt]} are in (0,1) and all
+#'   \code{fs[t,(Kt+1):Kmax]} are zero. For example, if \eqn{Kt = 2} and
+#'   \eqn{Kmax = 4} then \code{fs[t,]} might look like \code{[0.3, 0.7, 0, 0]}.
+#' @param ds Vector of \eqn{m} inter-marker distances, i.e. the \eqn{dt}s in
+#'   [1]. The \eqn{t}-th element of the inter-marker distance vector,
+#'   \code{ds[t]}, contains the distance between marker \eqn{t} and \eqn{t+1}
+#'   such that \code{ds[m] = Inf}, where \eqn{m} is the marker count. (Note that
+#'   this differs slightly from [1], where \code{ds[t]} contains the distance
+#'   between marker \eqn{t-1} and \eqn{t}). Distances between markers on
+#'   different markers are also considered infinite, i.e. if the chromosome of
+#'   marker \eqn{t+1} is not equal to the chromosome of \eqn{t}-th marker,
+#'   \code{ds[t] = Inf}.
+#' @param k data-generating switch rate parameter, i.e. \eqn{k} in [1].
+#' @param r data-generating relatedness parameter, i.e. \eqn{r} in [1].
+#' @param epsilon Genotyping error, i.e. \eqn{\epsilon} in [1]. The genotyping
+#'   error is the probability of miscalling one specific allele for another. As
+#'   such, the error rate for the t-th marker, \eqn{(Kt-1)\epsilon}, scales with
+#'   \eqn{Kt} (the per-marker allele count, cardinality).
+#' @param rho Recombination rate, i.e. \eqn{\rho} in [1]. The recombination rate
+#'   corresponds to the probability of a crossover per base pair. It is assumed
+#'   constant across the genome under the HMM of [1]. Its default value
+#'   corresponds to an average rate estimated for \emph{Plasmodium falciparum}
+#'   [2].
+#'
+#' @return Simulated genotype calls for a pair of haploid genotypes, i.e. the
+#'   \eqn{Yt}s of the \eqn{i}-th and \eqn{j}-th haploid genotypes in [1].
+#'   Specifically, a \eqn{m} by 2 matrix, where \eqn{m} is the marker count and
+#'   each column contains a haploid genotype. For all \eqn{t = 1,...,m} markers,
+#'   alleles are enumerated 0 to \eqn{Kt-1}, where \eqn{Kt} is the cardinality
+#'   (per-marker allele count) of the \eqn{t}-th marker. For example, if \eqn{Kt
+#'   = 2}, both \code{Ys[t,1]} and \code{Ys[t,2]} are either 0 or 1.
+#'
 #' @examples
 #' simulate_data(fs = frequencies$Colombia, ds = markers$dt, k = 10, r = 0.5)
 #'
-#' @references Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
-#'   Estimating relatedness between malaria parasites. Genetics, 212(4),
-#'   pp.1337-1351.
+#' @references \enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and
+#'   Buckee, C.O., 2019. Estimating relatedness between malaria parasites.
+#'   Genetics, 212(4), pp.1337-1351. \item Miles, A., Iqbal, Z., Vauterin, P.,
+#'   Pearson, R., Campino, S., Theron, M., Gould, K., Mead, D., Drury, E.,
+#'   O'Brien, J. and Rubio, V.R., 2016. Indels, structural variation, and
+#'   recombination drive genomic diversity in Plasmodium falciparum. Genome
+#'   research, 26(9), pp.1288-1299.}
 #' @export
 ###########################################################################
 
