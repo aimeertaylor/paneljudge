@@ -25,7 +25,7 @@
 #'   marker \eqn{t+1} is not equal to the chromosome of \eqn{t}-th marker,
 #'   \code{ds[t] = Inf}.
 #' @param Ys Matrix of genotypes calls for a pair of simulated haploid
-#'   genotypes, i.e. the \eqn{Yts} of the \eqn{i}-th and \eqn{j}-th haploid
+#'   genotypes, i.e. the \eqn{Yt}s of the \eqn{i}-th and \eqn{j}-th haploid
 #'   genotypes in [1]. Specifically, a \eqn{m} by 2 matrix, where \eqn{m} is the
 #'   marker count and each column contains a haploid genotype. For all \eqn{t =
 #'   1,...,m} markers, alleles are enumerated 0 to \eqn{Kt-1}, where \eqn{Kt} is
@@ -48,12 +48,13 @@
 #'
 #' @return Maximum likelihood estimates of the switch rate parameter, \eqn{k},
 #'   and relatedness parameter, \eqn{r}.
+#'
 #' @examples
 #' # First stimulate some data
-#' simulated_haploid_genotype_pair <- simulate_data(fs = frequencies$Colombia, ds = markers$dt, k = 5, r = 0.25)
+#' simulated_Ys <- simulate_Ys(fs = frequencies$Colombia, ds = markers$dt, k = 5, r = 0.25)
 #'
 #' # Second estimate the switch rate parameter, k, and relatedness parameter, r
-#' estimate_r_and_k(fs = frequencies$Colombia, ds = markers$dt, Ys = simulated_haploid_genotype_pair)
+#' estimate_r_and_k(fs = frequencies$Colombia, ds = markers$dt, Ys = simulated_Ys)
 #'
 #' @references \enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and
 #'   Buckee, C.O., 2019. Estimating relatedness between malaria parasites.

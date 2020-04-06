@@ -32,10 +32,10 @@ this differs slightly from [1], where \code{ds[t]} contains the distance
 between marker \eqn{t-1} and \eqn{t}). Distances between markers on
 different markers are also considered infinite, i.e. if the chromosome of
 marker \eqn{t+1} is not equal to the chromosome of \eqn{t}-th marker,
-\code{ds[t] = Inf};}
+\code{ds[t] = Inf}.}
 
 \item{Ys}{Matrix of genotypes calls for a pair of simulated haploid
-genotypes, i.e. the \eqn{Yts} of the \eqn{i}-th and \eqn{j}-th haploid
+genotypes, i.e. the \eqn{Yt}s of the \eqn{i}-th and \eqn{j}-th haploid
 genotypes in [1]. Specifically, a \eqn{m} by 2 matrix, where \eqn{m} is the
 marker count and each column contains a haploid genotype. For all \eqn{t =
 1,...,m} markers, alleles are enumerated 0 to \eqn{Kt-1}, where \eqn{Kt} is
@@ -73,10 +73,10 @@ the HMM described in [1].
 }
 \examples{
 # First stimulate some data
-simulated_haploid_genotype_pair <- simulate_data(fs = frequencies$Colombia, ds = markers$dt, k = 5, r = 0.25)
+simulated_Ys <- simulate_Ys(fs = frequencies$Colombia, ds = markers$dt, k = 5, r = 0.25)
 
 # Second estimate the switch rate parameter, k, and relatedness parameter, r
-estimate_r_and_k(fs = frequencies$Colombia, ds = markers$dt, Ys = simulated_haploid_genotype_pair)
+estimate_r_and_k(fs = frequencies$Colombia, ds = markers$dt, Ys = simulated_Ys)
 
 }
 \references{
