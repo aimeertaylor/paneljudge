@@ -3,7 +3,7 @@
 #'
 #' Given a matrix of marker allele frequencies, a vector of inter-marker
 #' distances, a relatedness parameter, and a switch rate parameter, for a pair
-#' of haploid genotypes \code{simulate_data()} returns genotype calls simulated
+#' of haploid genotypes \code{simulate_Ys()} returns genotype calls simulated
 #' under the HMM described in [1].
 #'
 #' @param fs Matrix of marker allele frequencies, i.e. the \eqn{ft}s in [1].
@@ -44,7 +44,7 @@
 #'   = 2}, both \code{Ys[t,1]} and \code{Ys[t,2]} are either 0 or 1.
 #'
 #' @examples
-#' simulate_data(fs = frequencies$Colombia, ds = markers$dt, k = 10, r = 0.5)
+#' simulate_Ys(fs = frequencies$Colombia, ds = markers$dt, k = 10, r = 0.5)
 #'
 #' @references \enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and
 #'   Buckee, C.O., 2019. Estimating relatedness between malaria parasites.
@@ -56,7 +56,7 @@
 #' @export
 ###########################################################################
 
-simulate_data <- function(fs, ds, k, r, epsilon = 0.001, rho = 7.4 * 10^(-7)){
+simulate_Ys <- function(fs, ds, k, r, epsilon = 0.001, rho = 7.4 * 10^(-7)){
 
   m <- dim(fs)[1] # Extract marker count
   Kmax <- dim(fs)[2] # Extract Kmax
