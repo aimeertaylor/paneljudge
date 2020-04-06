@@ -199,19 +199,19 @@ rs <- c("0.01"=0.01, "0.25"=0.25, "0.50"=0.50, "0.75"=0.75, "0.99"=0.99)
 k <- 5 # Data-generating switch rate parameter value
 n <- 5 # Number of pairs to per simulate per r in rs
 fs <- frequencies$Colombia # example marker allele frequencies
-distances <- markers$distances # distances between marker mid-points
+ds <- markers$distances # distances between marker mid-points
 
 mle_CIs <- lapply(rs, function(r) {
   sapply(1:n, function(i) {
 
     # First simulate genotype pair
-    Ys <- simulate_data(fs, gendist = distances, k, r)
+    Ys <- simulate_Ys(fs, ds, k, r)
 
     # Second, estimate r and k
-    krhat <- estimate_r_and_k(frequencies = fs, distances, Ys)
+    krhat <- estimate_r_and_k(fs, ds, Ys)
 
     # Third, compute confidence intervals (CIs)
-    CIs <- compute_r_and_k_CIs(frequencies = fs, distances, khat = krhat['khat'], rhat = krhat['rhat'])
+    CIs <- compute_r_and_k_CIs(fs, ds, khat = krhat['khat'], rhat = krhat['rhat'])
 
     # End of function
     return(c(krhat['rhat'], CIs['rhat',]))
