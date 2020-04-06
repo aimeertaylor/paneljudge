@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_r_and_k_CIs.R
 \name{compute_r_and_k_CIs}
 \alias{compute_r_and_k_CIs}
-\title{Compute confidence intervals for relatedness and switch rate parameters}
+\title{Compute confidence interval bounds for relatedness and switch rate parameters}
 \usage{
 compute_r_and_k_CIs(
   fs,
@@ -16,49 +16,57 @@ compute_r_and_k_CIs(
 )
 }
 \arguments{
-\item{fs}{ndata (marker count) by Kmax (max cardinality over m
-markers) matrix if Kt < Kmax for any t in 1:m, then fs[t,1:Kt] in (0,1) &
-fs[t,(Kt+1):Kmax] = 0 Example: if Kt = 2 < Kmax = 4 then fs[t,] might look
-like [0.2, 0.7, 0, 0].}
+\item{fs}{Matrix of marker allele frequencies, i.e. the \eqn{ft}s in [1].
+Specifically, a \eqn{m} by \eqn{Kmax} matrix, where \eqn{m} is the marker
+count and \eqn{Kmax} is the maximum cardinality (per-marker allele count)
+observed over all \eqn{m} markers. If, for any \eqn{t = 1,...,m}, the
+maximum cardinality exceeds that of the \eqn{t}-th marker (i.e. if
+\eqn{Kmax > Kt}), then all \code{fs[t,1:Kt]} are in (0,1) and all
+\code{fs[t,(Kt+1):Kmax]} are zero. For example, if \eqn{Kt = 2} and
+\eqn{Kmax = 4} then \code{fs[t,]} might look like \code{[0.3, 0.7, 0, 0]}.}
 
-\item{ds}{vector where ds[t] contains the distance between
-position t and t+1 or equivalently, gendist[t-1] contains the distance
-between position t-1 and t, for p > 1. s.t. only m-1 first entries of
-gendist are being used.}
+\item{ds}{Vector of \eqn{m} inter-marker distances, i.e. the \eqn{dt}s in
+[1]. The \eqn{t}-th element of the inter-marker distance vector,
+\code{ds[t]}, contains the distance between marker \eqn{t} and \eqn{t+1}
+such that \code{ds[m] = Inf}, where \eqn{m} is the marker count. (Note that
+this differs slightly from [1], where \code{ds[t]} contains the distance
+between marker \eqn{t-1} and \eqn{t}). Distances between markers on
+different markers are also considered infinite, i.e. if the chromosome of
+marker \eqn{t+1} is not equal to the chromosome of \eqn{t}-th marker,
+\code{ds[t] = Inf}.}
 
-\item{confidence}{confidence level (percentage) of confidence interval
-(default 95\%)}
+\item{khat}{Estimate of the switch rate parameter, i.e. estimate of \eqn{k} in [1].}
 
-\item{nboot}{number of parametric bootstrap estimates from which to compute
-the CI. Larger values provide a better approximation but CIs will take
-longer to compute.}
+\item{rhat}{Estimate of the relatedness parameter, i.e. estimate of \eqn{r} in [1].}
 
-\item{core_count}{number of cores to use to do computation. Set greater than or equal to two for parallel computation.
+\item{confidence}{Confidence level (percentage) of confidence interval
+(default 95\%).}
+
+\item{nboot}{Number of parametric bootstrap draws from which to compute
+the confidence interval bounds. Larger values provide a better approximation
+but prolong computation.}
+
+\item{core_count}{Number of cores to use to do computation.
+Set to 2 or more for parallel computation.
 Defaults to the number detected on the machine minus one.}
 
-\item{epsilon}{genotyping error (probability of miscall).}
-
-\item{rho}{recombination rate in probability of break point per base pair.}
-
-\item{kinit}{switch rate parameter value used to initialise loglikelihood
-optimization.}
-
-\item{rinit}{relatedness parameter value used to initialise loglikelihood
-optimization.}
+\item{...}{Arguments to be passed to \code{simulate_Ys()} and \code{estimate_r_and_k()}.}
 }
 \value{
-Confidence interval bounds around input switch rate parameter, k, and
-  relatedness parameter, r.
+Confidence interval bounds around input switch rate parameter, \eqn{k}, and
+  relatedness parameter, \eqn{r}.
 }
 \description{
-For specified confidence (default 95\%), given a matrix of input fs
-and a vector of marker ds, a switch rate parameter estimate, khat, and
-a relatedness parameter estimate, rhat. \code{compute_r_and_k_CIs()} returns
-the confidence intervals around the parameter estimates. Confidence intervals
-are approximate. They are approximated using the parametric bootstrap draws
-under the HMM described in Taylor et al. 2009 The parametric bootstrap draws
-are generated in parallel using a specifying number of cores. The quality and
-compute time of the approximation scales with nboot.
+Given a matrix of marker allele frequencies, a vector of inter-marker
+distances, and estimates of the relatedness and switch rate parameters,
+\code{compute_r_and_k_CIs()} returns confidence interval bounds around the
+parameter estimates. The default confidence is 95\%. The interval bounds are
+approximate. They are generated using parametric bootstrap draws of the
+parameter estimates based on genotype calls for haploid genotype pairs
+simulated under the HMM described in [1] using the input parameter estimates.
+The quality of the approximation increases and compute time scales with the
+number of parametric bootstrap draws, which are generated in parallel using a
+specified number of cores.
 }
 \examples{
 # First, stimulate some data
@@ -72,7 +80,7 @@ compute_r_and_k_CIs(frequencies$Colombia, markers$dt, khat = krhat['khat'], rhat
 
 }
 \references{
-Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
+\enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
   Estimating relatedness between malaria parasites. Genetics, 212(4),
-  pp.1337-1351.
+  pp.1337-1351.}
 }
