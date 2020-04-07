@@ -28,8 +28,8 @@
 #'
 #' @export
 ###########################################################################
-compute_eff_cardinalities <- function(fs){
-  eff_cardinalities = 1/rowSums(fs^2)
+compute_eff_cardinalities <- function(fs) {
+  eff_cardinalities <- 1 / rowSums(fs^2)
   return(eff_cardinalities)
 }
 
@@ -37,10 +37,10 @@ compute_eff_cardinalities <- function(fs){
 ###########################################################################
 #' Compute marker diversities
 #'
-#' Given a matrix of marker allele frequencies, \code{compute_diversities} returns the
-#' diversities of \eqn{t = 1,...,m} markers, where \eqn{m} is the marker count.
-#' Each diversity is calculated as described in [1], i.e.
-#' without correcting for finite sample sizes or considering uncertainty.
+#' Given a matrix of marker allele frequencies, \code{compute_diversities}
+#' returns the diversities of \eqn{t = 1,...,m} markers, where \eqn{m} is the
+#' marker count. Each diversity is calculated as described in [1], i.e. without
+#' correcting for finite sample sizes or considering uncertainty.
 #'
 #' @param fs Matrix of marker allele frequencies, i.e. the \eqn{ft}s in [1].
 #'   Specifically, a \eqn{m} by \eqn{Kmax} matrix, where \eqn{m} is the marker
@@ -56,15 +56,13 @@ compute_eff_cardinalities <- function(fs){
 #' @examples
 #' compute_diversities(fs = frequencies$Colombia)
 #'
-#' @references \enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
-#'   Estimating relatedness between malaria parasites. Genetics, 212(4),
-#'   pp.1337-1351.}
+#' @references \enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and
+#'   Buckee, C.O., 2019. Estimating relatedness between malaria parasites.
+#'   Genetics, 212(4), pp.1337-1351.}
 #'
 #' @export
 ###########################################################################
-compute_diversities <- function(fs){
-  diversities = 1-rowSums(fs^2)
+compute_diversities <- function(fs) {
+  diversities <- 1 - rowSums(fs^2)
   return(diversities)
 }
-
-

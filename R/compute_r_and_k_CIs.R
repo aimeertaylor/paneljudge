@@ -66,40 +66,41 @@
 #'
 #' @export
 ###########################################################################
-
 compute_r_and_k_CIs <- function(fs, ds, khat, rhat, confidence = 95, nboot = 100,
-                                core_count = parallel::detectCores()-1, ...){
+                                core_count = parallel::detectCores() - 1, ...) {
 
   # Retrieve all additional parameters
   all_params <- list(...)
 
-  # Define a subset of additional parameters to pass to simulate_Ys() using base::do.call(); see below.
-  # Alternatively, could use R.utils::doCall() with .ignoreUnusedArgs=TRUE.
+  # Define a subset of additional parameters to pass to simulate_Ys() using
+  # base::do.call(); see below. Alternatively, could use R.utils::doCall() with
+  # .ignoreUnusedArgs=TRUE.
   sim_params <- all_params
   sim_params$kinit <- NULL
   sim_params$rinit <- NULL
 
-  # Register available cores in order to run code in parallel
-  # Note that packages parallel and foreach are available through doParallel, which is imported
+  # Register available cores in order to run code in parallel Note that
+  # packages parallel and foreach are available through doParallel, which is
+  # imported
   doParallel::registerDoParallel(cores = core_count)
 
-  # Generate parametric bootstrap draw of r and k estimates
-  # %dorng% is similar to %dopar%, however
-  # %dorng% loops are reproducible whereas %dopar% loops are not,
-  # %dorng% returns the whole sequence of RNG seeds as an attribute whereas %dopar% does not.
-  rkhats_boot = foreach::foreach(iboot = 1:nboot, .combine = rbind) %dorng% {
-    simulated_Ys <- do.call(simulate_Ys, args = c(list(fs, ds, k = khat, r = rhat), sim_params))
+  # Generate parametric bootstrap draw of r and k estimates %dorng% is similar
+  # to %dopar%, however %dorng% loops are reproducible whereas %dopar% loops
+  # are not, %dorng% returns the whole sequence of RNG seeds as an attribute
+  # whereas %dopar% does not.
+  rkhats_boot <- foreach::foreach(iboot = 1:nboot, .combine = rbind) %dorng% {
+    simulated_Ys <- do.call(simulate_Ys,
+                            args = c(list(fs, ds, k = khat, r = rhat), sim_params))
     rkhats_boot <- estimate_r_and_k(fs, ds, Ys = simulated_Ys, ...)
   }
 
   # Calculate CIs as quantiles of the parametric bootstrap draw
-  alpha <- (1-confidence/100)
+  alpha <- (1 - confidence / 100)
   CI <- apply(rkhats_boot, 2, quantile, probs = c(alpha/2, 1-alpha/2))
-  if (any(is.na(CI))) stop('Bootstrap CI is NA')
+  if (any(is.na(CI))) stop("Bootstrap CI is NA")
 
   # End of function
   return(t(CI))
 }
-
 
 

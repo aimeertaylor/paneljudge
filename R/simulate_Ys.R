@@ -55,63 +55,61 @@
 #'   research, 26(9), pp.1288-1299.}
 #' @export
 ###########################################################################
-
-simulate_Ys <- function(fs, ds, k, r, epsilon = 0.001, rho = 7.4 * 10^(-7)){
+simulate_Ys <- function(fs, ds, k, r, epsilon = 0.001, rho = 7.4 * 10 ^ (-7)) {
 
   m <- dim(fs)[1] # Extract marker count
   Kmax <- dim(fs)[2] # Extract Kmax
   Ys <- matrix(NA, nrow = m, ncol = 2) # Create simulated data store
 
-  for(t in 1:m){ # For t = 1,...,m
+  for(t in 1:m) { # For t = 1,...,m
 
-    if (t == 1){ # At t = 1, draw IBDt from Bernoulli(r)
+    if (t == 1) { # At t = 1, draw IBDt from Bernoulli(r)
       IBD_t <- (runif(1) <= r)
     } else { # For t > 1, draw IBDt according to the transition matrix
-      if (IBD_t){
-        IBD_t <- (runif(1) < (1 - (1-r)*(1 - exp(-k * rho * ds[t-1]))))
+      if (IBD_t) {
+        IBD_t <- (runif(1) < (1 - (1 - r)*(1 - exp(-k * rho * ds[t - 1]))))
       } else {
-        IBD_t <- (runif(1) < r*(1 - exp(-k * rho * ds[t-1])))
+        IBD_t <- (runif(1) < r*(1 - exp(-k * rho * ds[t - 1])))
       }
     }
 
     # Extract the t-th marker cardinality (allele count)
     Kt <- 1
-    while((Kt < Kmax) && (fs[t,Kt] > 1e-10)){
+    while((Kt < Kmax) && (fs[t, Kt] > 1e-10)) {
       Kt <- Kt + 1
     }
 
-    # Sample Gi (true alleles of the i-th individual) according to the allele frequencies
-    Gi <- sample(x = 0:(Kt-1), size = 1, prob = fs[t,1:Kt])
+    # Sample Gi (true alleles of the i-th individual) according to the allele
+    # frequencies
+    Gi <- sample(x = 0:(Kt - 1), size = 1, prob = fs[t, 1:Kt])
 
     # Sample Gj given IBD_t and Gi
-    if (IBD_t){ # Copy true alleles of Gi
+    if (IBD_t) { # Copy true alleles of Gi
       Gj <- Gi
     } else { # Draw independently according to the allele frequencies
-      Gj <- sample(x = 0:(Kt-1), size = 1, prob = fs[t,1:Kt])
+      Gj <- sample(x = 0:(Kt - 1), size = 1, prob = fs[t, 1:Kt])
     }
 
     # Generate Yi given Gi (i.e. potentially erroneous genotyping call)
-    if (runif(1) < (1 - (Kt-1)*epsilon)){ # No error
+    if (runif(1) < (1 - (Kt - 1) * epsilon)) { # No error
       Yi <- Gi
     } else {  # Sample uniformly on the other possible alleles
-      otheralleles <- setdiff(0:(Kt-1), Gi)
+      otheralleles <- setdiff(0:(Kt - 1), Gi)
       Yi <- sample(x = otheralleles, size = 1)
     }
 
     # Generate Yj given Gj (i.e. potentially erroneous genotyping call)
-    if (runif(1) < (1 - (Kt-1)*epsilon)){ # No error
+    if (runif(1) < (1 - (Kt - 1) * epsilon)) { # No error
       Yj <- Gj
     } else { # Sample uniformly on the other possible alleles
-      otheralleles <- setdiff(0:(Kt-1), Gj)
+      otheralleles <- setdiff(0:(Kt - 1), Gj)
       Yj <- sample(x = otheralleles, size = 1)
     }
 
     # Store simulated data
-    Ys[t,] <- c(Yi,Yj)
+    Ys[t, ] <- c(Yi, Yj)
   }
 
   # End of function
   return(Ys)
 }
-
-

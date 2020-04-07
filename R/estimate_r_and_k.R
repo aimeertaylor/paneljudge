@@ -66,10 +66,11 @@
 #'
 #' @export
 ###########################################################################
-estimate_r_and_k <- function(fs, ds, Ys, epsilon = 0.001, rho = 7.4 * 10^(-7), kinit = 50, rinit = 0.5){
+estimate_r_and_k <- function(fs, ds, Ys, epsilon = 0.001, rho = 7.4 * 10 ^ (-7),
+                             kinit = 50, rinit = 0.5) {
 
   # Convert to a into matrix if not already (loglikelihood_cpp expects a matrix)
-  if (!is.matrix(fs)) {fs <- as.matrix(fs)}
+  if (!is.matrix(fs)) fs <- as.matrix(fs)
 
   # Define the function to pass to optim()
   ll <- function(k, r) loglikelihood_cpp(k, r, Ys, fs, ds, epsilon, rho)
@@ -78,10 +79,10 @@ estimate_r_and_k <- function(fs, ds, Ys, epsilon = 0.001, rho = 7.4 * 10^(-7), k
   optimization <- optim(par = c(kinit, rinit), fn = function(x) - ll(x[1], x[2]))
 
   # Extract and name estimates
-  rkhats <- c('khat' = optimization$par[1], 'rhat' = optimization$par[2])
+  rkhats <- c("khat" = optimization$par[1], "rhat" = optimization$par[2])
 
-  if( all(rkhats == c(kinit, rinit)) ) {
-    warning('optimization has returned initial parameter values. Data are possibly uniformative.')
+  if (all(rkhats == c(kinit, rinit))) {
+    warning("optimization has returned initial parameter values. Data are possibly uniformative.")
   }
 
   # End of function
