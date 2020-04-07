@@ -28,7 +28,6 @@ default_par <- par() # Save default par to pass to on.exit() at end
 ```
 
 ```{r setup}
-devtools::load_all() # Remove this line once complete
 library(paneljudge) # Load and attach 
 rm(list = ls()) # For cleanliness 
 set.seed(1) # For reproducibility
