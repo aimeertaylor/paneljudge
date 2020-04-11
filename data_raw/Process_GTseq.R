@@ -25,9 +25,9 @@
 #
 # ******************************* IMPORTANT ********************************
 # In the following we refer to Tim's Genotype.1 as Allele.1 etc. As mentioned
-# above, alleles per amplicon are ordered by their frequencies (this is a
+# above, alleles per marker are ordered by their frequencies (this is a
 # requirement of the HMM of [1]). As such, the names of the alleles per
-# amplicon (Allele.1, Allele.2, etc.) likely correspond to different
+# marker (Allele.1, Allele.2, etc.) likely correspond to different
 # microhaplotype SNP sequences in different countries, e.g. the most common
 # allele in Sengal may differ to that in Colombia. This is not a problem since
 # data on each country should be simulated and analysed separately using the
@@ -37,6 +37,12 @@
 ############################################################################
 rm(list = ls())
 require(plyr) # for dlply
+
+if(exists("markers")){
+  stop("Before running this script, ensure paneljudge isn't attached
+       (e.g. via devtools::load_all())), otherwise problems with duplicate
+       names markers and frequencies")
+}
 
 # Set working directory to this file location and load example raw input data
 amp_frqs = readRDS('amp_frqs.rds')
@@ -101,6 +107,7 @@ frequencies = plyr::dlply(amp_frqs, 'Country', function(x){
   y <- x[ordered_markers, Alleles] # Order amplicons according to chrom and pos
   # Check order of alleles per amplicon and re-order if necessary
   if(!all(apply(y[, Alleles], 1, function(z){all(z == cummin(z))}))){
+    writeLines('Reordering frequencies')
     y <- t(apply(y[, Alleles], 1, function(f) sort(as.numeric(f), decreasing = T))) # Order frequencies as numeric
   }
   return(as.matrix(y))
