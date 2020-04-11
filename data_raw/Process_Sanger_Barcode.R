@@ -118,8 +118,8 @@ markers_sanger_barcode <- markers
 frequencies_sanger_barcode <- frequencies
 
 # Save example data
-save(markers, file = '../data/markers_sanger_barcode.RData')
-save(frequencies, file = '../data/frequencies_sanger_barcode.RData')
+save(markers_sanger_barcode, file = '../data/markers_sanger_barcode.RData')
+save(frequencies_sanger_barcode, file = '../data/frequencies_sanger_barcode.RData')
 
 
 
