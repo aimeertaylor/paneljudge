@@ -47,8 +47,12 @@ if(exists("markers")){
 # Set working directory to this file location and load example raw input data
 amp_frqs = readRDS('amp_frqs.rds')
 
-# Check that there are no factors
-any(apply(amp_frqs, 2, is.factor))
+# Convert factor columns. Do not use apply (e.g. apply(amp_frqs, 2, is.factor))
+# since apply converts data.frame to matrix and surreptitiously convert factors
+# to characters s.t. all(apply(amp_frqs, 2, is.factor)) returns FALSE even when
+# some columns are factors
+factor_inds <- sapply(amp_frqs, is.factor)
+amp_frqs[factor_inds] <- lapply(amp_frqs[factor_inds], as.character)
 
 # Rename "Genotype.1" by "Allele.1" etc.
 colnames(amp_frqs) <- gsub("Genotype", "Allele", colnames(amp_frqs))

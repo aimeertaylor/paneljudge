@@ -38,8 +38,17 @@ if(exists("markers")){
 # do not devtools::load_all
 load('All_Sanger_Amplicon_Haplotype_Frqs.RData')
 
-# Check that there are no factors
-any(apply(amp_frqs, 2, is.factor))
+# Convert Start and Stop columns to numeric
+# This problem was not encountered in Process_GTseq.R
+amp_frqs$Start <- as.numeric(amp_frqs$Start)
+amp_frqs$Stop <- as.numeric(amp_frqs$Start)
+
+# Convert factor columns. Do not use apply (e.g. apply(amp_frqs, 2, is.factor))
+# since apply converts data.frame to matrix and surreptitiously convert factors
+# to characters s.t. all(apply(amp_frqs, 2, is.factor)) returns FALSE even when
+# some columns are factors
+factor_inds <- sapply(amp_frqs, is.factor)
+amp_frqs[factor_inds] <- lapply(amp_frqs[factor_inds], as.character)
 
 # Rename "Genotype.1" by "Allele.1" etc.
 colnames(amp_frqs) <- gsub("Genotype", "Allele", colnames(amp_frqs))
@@ -108,10 +117,9 @@ frequencies = plyr::dlply(amp_frqs, 'Country', function(x){
 markers_sanger_barcode <- markers
 frequencies_sanger_barcode <- frequencies
 
-# Save data in data_raw s.t. not confused with package example markers and
-# frequencies processed by Process_GTseq.R
-save(markers, file = 'markers_sanger_barcode.RData')
-save(frequencies, file = 'frequencies_sanger_barcode.RData')
+# Save example data
+save(markers, file = '../data/markers_sanger_barcode.RData')
+save(frequencies, file = '../data/frequencies_sanger_barcode.RData')
 
 
 
