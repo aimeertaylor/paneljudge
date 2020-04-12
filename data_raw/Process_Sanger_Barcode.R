@@ -54,9 +54,9 @@ amp_frqs[factor_inds] <- lapply(amp_frqs[factor_inds], as.character)
 colnames(amp_frqs) <- gsub("Genotype", "Allele", colnames(amp_frqs))
 
 # Rename countries (no Mali in All_Sanger_Amplicon_Haplotype_Frqs.RData as pred-dates amp_frqs.rds)
-amp_frqs$Country <- gsub("columbia", "Colombia", amp_frqs$Country)
-amp_frqs$Country <- gsub("senegal", "Senegal", amp_frqs$Country)
-amp_frqs$Country <- gsub("frenchguiana", "French Guiana", amp_frqs$Country)
+amp_frqs$Country <- gsub("Columbia", "Colombia", amp_frqs$Country)
+amp_frqs$Country <- gsub("Senegal", "Senegal", amp_frqs$Country)
+amp_frqs$Country <- gsub("FrenchGuiana", "French Guiana", amp_frqs$Country)
 
 # Separate amplicon data (marker regions) from country specific data (allele frequencies)
 markers = amp_frqs[!duplicated(amp_frqs$Amplicon_name), c('Amplicon_name','Chr','Start','Stop')]
