@@ -78,10 +78,8 @@ all(sort(unique(markers$chrom)) == 1:14)
 reordered_data_list = list()
 for(chr in sort(unique(markers$chrom))){
   x = markers$pos[chr == markers$chrom] # Extract positions per chromosome
-  if(!all(x == cummax(x))){ # If not all monotonically increasing...
-    inds = sort.int(x, index.return = T)$ix # Sort positions
-    reordered_data_list[[chr]] = markers[chr == markers$chrom, ][inds, ]
-  }
+  inds = sort.int(x, index.return = T)$ix # Sort positions
+  reordered_data_list[[chr]] = markers[chr == markers$chrom, ][inds, ]
 }
 
 # Check re-ordered data: returns TRUE if ordered correctly
@@ -118,8 +116,8 @@ markers_sanger_barcode <- markers
 frequencies_sanger_barcode <- frequencies
 
 # Save example data
-save(markers_sanger_barcode, file = '../data/markers_sanger_barcode.RData')
-save(frequencies_sanger_barcode, file = '../data/frequencies_sanger_barcode.RData')
+save(markers_sanger_barcode, file = 'markers_sanger_barcode.RData')
+save(frequencies_sanger_barcode, file = 'frequencies_sanger_barcode.RData')
 
 
 
