@@ -40,12 +40,10 @@ vignette("paneljudge_example")
 Possible future additions to the package are listed below. If you would like to contribute, see **Contributing** below or email ataylor@hsph.harvard.edu. 
 
 ## Future work
-- Add tests, errors and warnings for unexpected input (frequencies etc.) and propagate
+- Add tests, errors and warnings for unexpected input (frequencies etc.) 
 - Modify loglikelihood_cpp notation
-- Add Rshiny plot of marker positions with dynamic annotations: marker name, effective cardinality, diversity etc. 
+- Add Rshiny plot of marker positions with dynamic annotations inc. marker name, effective cardinality, diversity etc. 
 - Integrate hmmIBD [2].
-- Consider simulation and inference under an independent model.
-
 
 ## Contributing
 
