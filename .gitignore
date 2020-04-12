@@ -2,3 +2,8 @@
 .DS_Store
 .Rhistory
 inst/doc
+
+# Rmd generated files 
+**/multipanel_multicountry_cache/
+**/multipanel_multicountry.log
+
