@@ -1,194 +1,31 @@
 ---
 title: "paneljudge_multipanel_multicountry"
 output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{paneljudge_multipanel_multicountry}
+ vignette: >
+ %\VignetteIndexEntry{paneljudge_multipanel_multicountry}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
----
-
+ ---
+  
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+collapse = TRUE,
+comment = "#>", 
+fig.width = 12, fig.height = 12, fig.fullwidth = TRUE 
 )
 ```
 
 ```{r setup}
-library(paneljudge)
-```
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(cache = TRUE, cache.comments = FALSE, 
-                      include = TRUE, echo = F, 
-                      fig.width = 11, fig.height = 11,
-                      fig.pos = 'H', 
-                      dev = 'png', dpi = 300)
-
 rm(list = ls())
+library(paneljudge)
 require(RColorBrewer)
 require(kableExtra)
-
-# Chromosome lengths copied from plasmoDB (there are better ways)
-chr_length <- c(640851, 947102, 1067971, 1200490, 1343557, 
-                1418242, 1445207, 1472805, 1541735, 1687656, 
-                2038340, 2271494, 2925236, 3291936)
-
-# No. of chromosomes
-no_chr <- length(chr_length)
 ```
 
-```{r load sanger_amp_data_for_IBDsim}
-# Load a per-population barcode specifiction data set
-load('../RData/sanger_amp_data_for_IBDsim.RData')
-
-# Extract eff_cardinalities 
-eff_cardinalities = sapply(names(frqs_per_country), function(country){
-  Kts = 1/rowSums(frqs_per_country[[country]]^2)})
-
-# Extract diversities
-Diversities = 1-1/eff_cardinalities
-
-# Marker count
-marker_count <- dim(amp_data)[1] 
-
-# Mean eff_cardinality
-mean(eff_cardinalities)
-
-# Mean eff_cardinality x marker count
-mean(eff_cardinalities) * marker_count
-```
-
-```{r load GTseq_amp_data_for_IBDsim}
-# Summary of diversity / eff_cardinality
-load('../RData/GTseq_amp_data_for_IBDsim.RData')
-eff_cardinalities = sapply(names(frqs_per_country), function(country){
-  Kts = 1/rowSums(frqs_per_country[[country]]^2)})
-Diversities = 1-1/eff_cardinalities
-marker_count <- dim(amp_data)[1] 
-mean(eff_cardinalities)
-mean(eff_cardinalities) * dim(amp_data)[1]
-
-# Single out CTSA
-CTSA = rownames(eff_cardinalities)[grepl("z", rownames(eff_cardinalities))]
-CTSA_ind = which(rownames(eff_cardinalities) %in% CTSA)
-writeLines(sprintf("CTSA (unordered) are labelled: %s", paste(CTSA, collapse = ' ')))
-```
-
-```{r marker positions}
-# Amplicon position plot (to-do: add chrom lengths)
-plot(amp_data$pos, amp_data$chrom, pch = "|",
-     ylab = 'Chromosome', xlab = 'Chromosomal position (bp)')
-
-# Add chromosome lengths
-for(chr in 1:no_chr){
-  segments(x0 = rep(0, no_chr), x1 = chr_length[chr], 
-           y0 = rep(chr, no_chr), y1 = rep(chr, no_chr))  
-}
-
-# Add CTSA annotations
-text(x = amp_data[CTSA, 'pos'], 
-     y = amp_data[CTSA, 'chrom'], labels = gsub('z', '', CTSA), 
-     pos = 3, offset = 1)
-```
-
-```{r plot eff_cardinalities and diversities plots}
-# Manually match colours across scripts (compare with Plot_Sanger_vs_GTseq_Sim.R)
-palettes = c("frenchguiana" = 'YlGn', 
-             "columbia" = 'YlOrRd', 
-             "senegal" = 'YlGnBu', 
-             'mali' = 'PuRd')
-cols = sapply(colnames(eff_cardinalities), function(c){brewer.pal(n=3, palettes[c])[3]})
-
-matplot(log(eff_cardinalities), type = "b", pch = 20, lty = 'solid', col = cols, 
-        xlab = "Amplicon index")
-# single out CTSA
-abline(v = CTSA_ind, col = 'gray')
-mtext(at = CTSA_ind, side = 3, text = gsub('z', '', CTSA), 
-      las = 2, cex = 0.7, line = 0.25)
-legend('top', horiz = T, inset = -0.01, cex = 0.5, bty = 'n', 
-       legend = colnames(Diversities), fill = cols)
-
-matplot(Diversities, type = "b", pch = 20, lty = 'solid', col = cols, 
-        xlab = "Amplicon index")
-# single out CTSA
-abline(v = CTSA_ind, col = 'gray')
-mtext(at = CTSA_ind, side = 3, text = gsub('z', '', CTSA), 
-      las = 2, cex = 0.7, line = 0.25)
-legend('top', horiz = T, inset = -0.01, cex = 0.5, bty = 'n', 
-       legend = colnames(Diversities), fill = cols)
-```
-
-```{r plot diversities wrt positions}
-# Plot diversity wrt position
-plot(NULL, las = 1, 
-     yaxt = 'n',
-     bty = 'n', main = 'Diversity', 
-     xlim = range(amp_data$pos), 
-     ylim = range(amp_data$chrom)+c(-0.01,1.01), 
-     ylab = 'Chromosome', 
-     xlab = 'Chromosomal position (bp)')
-
-# Add chromosome lengths
-for(chr in 1:no_chr){
-  segments(x0 = rep(0, no_chr), x1 = chr_length[chr], 
-           y0 = rep(chr, no_chr), y1 = rep(chr, no_chr))  
-}
-
-for(chr in unique(amp_data$chrom)){
-  
-  amplicons = amp_data$Amplicon_name[amp_data$chrom == chr]
-  matplot(y = Diversities[amplicons,] + chr, 
-          x = amp_data$pos[amp_data$chrom == chr], 
-          type = "b", pch = 20, lty = 'solid', col = cols, add = T)
-  
-  # Add CTSA
-  if(chr %in% amp_data[CTSA, 'chrom']){
-    i = which(amp_data[CTSA, 'chrom'] == chr)
-    segments(x0 = amp_data[CTSA[i], 'pos'], 
-             x1 = amp_data[CTSA[i], 'pos'], 
-             y0 = min(Diversities[amplicons,] + chr), 
-             y1 = max(Diversities[amplicons,] + chr), 
-             col = 'black')
-  }
-  
-}
-legend('bottomright', inset = 0.1, legend = colnames(Diversities), fill = cols)
-```
-
-```{r eff_cardinality summaries}
-writeLines("eff_cardinalities exc. CTSA:")
-kable(apply(eff_cardinalities[-CTSA_ind,],2,summary))
-
-writeLines("eff_cardinalities inc. CTSA:")
-kable(apply(eff_cardinalities,2,summary))
-```
-
-```{r diversity summaries}
-writeLines("Diversities exc. CTSA:")
-kable(apply(Diversities[-CTSA_ind,],2,summary))
-
-writeLines("Diversities inc. CTSA:")
-kable(apply(Diversities,2,summary))
-```
-
-```{r print top eff_cardinalites and diversities}
-# What are the top 10 eff_cardinalities / Diversities
-TopCard <- apply(eff_cardinalities, 2, function(x){
-  y <- head(sort(x, decreasing = T), 3)
-  return(list(round(y,2)))
-})
-
-TopDiv <- apply(Diversities, 2, function(x){
-  y <- head(sort(x, decreasing = T), 3)
-  return(list(round(y,2)))
-})
-
-TopTab <- cbind(eff_cardinality = unlist(TopCard), Diversity = unlist(TopDiv))
-
-writeLines("Top three:")
-kable(TopTab)
+```{r}
+# Temporary hacks
+devtools::load_all()
+names(mles_CIs_sanger_barcode) <- c("Colombia", "French Guiana", "Senegal")
 ```
 
 ```{r specify colours and panels}
@@ -196,125 +33,211 @@ kable(TopTab)
 # Colours and names of panels and countries
 # =======================================================
 # Manually name panels via palettes_panel: 
-palettes_panels = c("Sanger" = 'YlGn', 
-                    "GTseq_rmCTSA" = 'YlGnBu', 
-                    "GTseq" = 'YlOrRd')
+panels <- c("GTseq","GTseq_notCTSA","sanger_barcode","onlyCTSA")
+cols_panels = RColorBrewer::brewer.pal(length(panels), 'Dark2')
+names(cols_panels) <- panels
 
 # Manually name countries via palettes_panel: 
-palettes_countries = c("frenchguiana" = 'YlGn', 
-                       "columbia" = 'YlOrRd', 
-                       "senegal" = 'YlGnBu', 
-                       'mali' = 'PuRd')
+palettes_countries = c("French Guiana" = 'YlGn', 
+                       "Colombia" = 'YlOrRd', 
+                       "Senegal" = 'YlGnBu', 
+                       'Mali' = 'PuRd')
 
-# Extract panel and country names: 
-panels = names(palettes_panels)
+# Extract country names: 
 countries = names(palettes_countries)
+names(countries) <- countries # Name s.t. when used with lapply returns named list
 
-# Single colour per panel ("3" is a magic number since it is the minimum n brewer.pal accepts)
-cols_panels = sapply(panels, function(i){brewer.pal(n=3, palettes_panels[i])[3]})
-
-# Single colour per country ("3" is a magic number since it is the minimum n brewer.pal accepts)
-cols_countries = sapply(countries, function(i){brewer.pal(n=3, palettes_countries[i])[3]})
+# Specify ks and rs and name s.t. if used in lapply or sapply output is named
+ks <- names(mles_CIs_GTseq$Colombia)
+names(ks) <- ks
+rs <- names(mles_CIs_GTseq$Colombia$`1`)
+names(rs) <- rs
 ```
 
 ```{r extract CI lengths}
 # =======================================================
-# Extract CI lengths and rhat per panel per country
-# Error does not halt code since try is used
+# Extract CI lengths and rhat per panel 
 # =======================================================
-CI_lengths_rhat <- lapply(countries, function(country){
-  
-  CIlengths_rhat_country <- lapply(panels, function(panel, the_country){
-    
-    # Load sim results PPair_results
-    # try() is only necessary because currently we have no results for Sanger mali
-    try_error <- try(load(sprintf('../RData/%s_Amplicon_SimResults_%s.Rdata', panel, country)), 
-                     silent = TRUE)
-    
-    # if statement only necessary because currently we have no results for Sanger mali
-    if(class(try_error) == "try-error"){
-      CIlengths_rhat_panel_country <- NULL 
-    } else {
-      
-      # Extract CI lengths and rhat for a specific panel
-      CIlengths_rhat_panel_country <- lapply(PPair_results, function(w){
-        sapply(w, function(x){
-          c('CIlength' = x['97.5%','r'] - x['2.5%','r'], # Compute
-            'rhat' = x['rkhat','r'])
-        })})
-      
-      # Remove sim results
-      rm(PPair_results) 
-    } 
-    
-    # Return CI lengths and rhat for specific panel and country
-    return(CIlengths_rhat_panel_country)
-  }, the_country = country)
-  
-  # Name by panel (note: lapply doesn't name since panels is unamed)
-  names(CIlengths_rhat_country) <- panels
-  
-  # Return CI lengths and rhat for specific country
-  return(CIlengths_rhat_country)
+CI_lengths_rhat <- list()
+
+CI_lengths_rhat$GTseq <- lapply(mles_CIs_GTseq, function(mles_country){
+  lapply(mles_country, function(mles_k){
+    lapply(mles_k, function(mles_r){
+      sapply(mles_r, function(mles_i){
+        # Upper and lower 95% CIs (CI colnames diff for non-default CIs)
+        CI_length <- mles_i['rhat', '97.5%'] - mles_i['rhat', '2.5%'] 
+        rhat <- mles_i['rhat', 'krhat'] # relatedness estimate
+        return(c('CIlength' = CI_length, 'rhat' = rhat)) # End of fun. 
+      })
+    })
+  })
 })
 
-# Name by country (note: lapply doesn't name since countries is unamed)
-names(CI_lengths_rhat) <- countries
+CI_lengths_rhat$GTseq_notCTSA <- lapply(mles_CIs_GTseq_notCTSA, function(mles_country){
+  lapply(mles_country, function(mles_k){
+    lapply(mles_k, function(mles_r){
+      sapply(mles_r, function(mles_i){
+        # Upper and lower 95% CIs (CI colnames diff for non-default CIs)
+        CI_length <- mles_i['rhat', '97.5%'] - mles_i['rhat', '2.5%'] 
+        rhat <- mles_i['rhat', 'krhat'] # relatedness estimate
+        return(c('CIlength' = CI_length, 'rhat' = rhat)) # End of fun. 
+      })
+    })
+  })
+})
+
+CI_lengths_rhat$onlyCTSA <- lapply(mles_CIs_onlyCTSA, function(mles_country){
+  lapply(mles_country, function(mles_k){
+    lapply(mles_k, function(mles_r){
+      sapply(mles_r, function(mles_i){
+        # Upper and lower 95% CIs (CI colnames diff for non-default CIs)
+        CI_length <- mles_i['rhat', '97.5%'] - mles_i['rhat', '2.5%'] 
+        rhat <- mles_i['rhat', 'krhat'] # relatedness estimate
+        return(c('CIlength' = CI_length, 'rhat' = rhat)) # End of fun. 
+      })
+    })
+  })
+})
+
+CI_lengths_rhat$sanger_barcode <- lapply(mles_CIs_sanger_barcode, function(mles_country){
+  lapply(mles_country, function(mles_k){
+    lapply(mles_k, function(mles_r){
+      sapply(mles_r, function(mles_i){
+        # Upper and lower 95% CIs (CI colnames diff for non-default CIs)
+        CI_length <- mles_i['rhat', '97.5%'] - mles_i['rhat', '2.5%'] 
+        rhat <- mles_i['rhat', 'krhat'] # relatedness estimate
+        return(c('CIlength' = CI_length, 'rhat' = rhat)) # End of fun. 
+      })
+    })
+  })
+})
 ```
 
 ```{r extract RMSEs}
 # =======================================================
-# Extract RMSE results per panel per country
-# Error does not halt code since try is used
+# Extract RMSE results per panel 
 # =======================================================
-RMSE <- lapply(countries, function(country){
-  
-  RMSE_country <- lapply(panels, function(panel, the_country){
-    
-    # Load sim results PPair_results
-    # try() is only necessary because currently we have no results for Sanger mali
-    try_error <- try(load(sprintf('../RData/%s_Amplicon_SimResults_%s.Rdata', panel, country)), 
-                     silent = T)
-    
-    # if statement only necessary because currently we have no results for Sanger mali
-    if(class(try_error) == "try-error"){
-      RMSE_panel_country <- NULL 
-    } else {
-      
-      RMSE_panel_country <- RMSEr_results
-      rm(RMSEr_results) # Remove sim results
-    } 
-    
-    # Return CI lengths and rhat for specific panel and country
-    return(RMSE_panel_country)
-  }, the_country = country)
-  
-  # Name by panel (note: lapply doesn't name since panels is unamed)
-  names(RMSE_country) <- panels
-  
-  # Return CI lengths and rhat for specific country
-  return(RMSE_country)
+RMSE <- list()
+
+RMSE$GTseq <- lapply(mles_CIs_GTseq, function(mles_country){
+  lapply(mles_country, function(mles_k){
+    rs <- names(mles_k) # Character vector
+    names(rs) <- rs # name s.t. RMSE is named on return
+    sapply(rs, function(r){
+      mles_r <- mles_k[[r]]
+      RMSE <- sqrt(mean(sapply(mles_r, function(mles_i){
+        (mles_i['rhat', 'krhat'] - as.numeric(r))^2
+      })))
+      return(RMSE)
+    })
+  })
 })
 
-# Name by country (note: lapply doesn't name since countries is unamed)
-names(RMSE) <- countries
+RMSE$GTseq_notCTSA <- lapply(mles_CIs_GTseq_notCTSA, function(mles_country){
+  lapply(mles_country, function(mles_k){
+    rs <- names(mles_k) # Character vector
+    names(rs) <- rs # name s.t. RMSE is named on return
+    sapply(rs, function(r){
+      mles_r <- mles_k[[r]]
+      RMSE <- sqrt(mean(sapply(mles_r, function(mles_i){
+        (mles_i['rhat', 'krhat'] - as.numeric(r))^2
+      })))
+      return(RMSE)
+    })
+  })
+})
+
+RMSE$onlyCTSA <- lapply(mles_CIs_onlyCTSA, function(mles_country){
+  lapply(mles_country, function(mles_k){
+    rs <- names(mles_k) # Character vector
+    names(rs) <- rs # name s.t. RMSE is named on return
+    sapply(rs, function(r){
+      mles_r <- mles_k[[r]]
+      RMSE <- sqrt(mean(sapply(mles_r, function(mles_i){
+        (mles_i['rhat', 'krhat'] - as.numeric(r))^2
+      })))
+      return(RMSE)
+    })
+  })
+})
+
+RMSE$sanger_barcode <- lapply(mles_CIs_sanger_barcode, function(mles_country){
+  lapply(mles_country, function(mles_k){
+    rs <- names(mles_k) # Character vector
+    names(rs) <- rs # name s.t. RMSE is named on return
+    sapply(rs, function(r){
+      mles_r <- mles_k[[r]]
+      RMSE <- sqrt(mean(sapply(mles_r, function(mles_i){
+        (mles_i['rhat', 'krhat'] - as.numeric(r))^2
+      })))
+      return(RMSE)
+    })
+  })
+})
 ```
 
+```{r extract CIs for k10}
+# =======================================================
+# Extract CIs for k = 10
+# =======================================================
+CIs_k10 <- list()
 
-```{r plot CI lengths over all ks}
+CIs_k10$GTseq <- lapply(mles_CIs_GTseq, function(per_country){
+  per_country[["10"]]
+})
+
+CIs_k10$GTseq_notCTSA <- lapply(mles_CIs_GTseq_notCTSA, function(per_country){
+  per_country[["10"]]
+})
+
+CIs_k10$onlyCTSA <- lapply(mles_CIs_onlyCTSA, function(per_country){
+  per_country[["10"]]
+})
+
+CIs_k10$sanger_barcode <- lapply(mles_CIs_sanger_barcode, function(per_country){
+  per_country[["10"]]
+})
+
+
+
+```
+
+```{r re-order by country}
 # =======================================================
-# Plot CI lengths and rhat per country coloured by panel
-# (for all k combined)
+# Re order lists by country
+# Entries for Mali sanger_barcode will be NULL as of April 2020
 # =======================================================
+CI_lengths_rhat <- lapply(countries, function(country){
+  lapply(CI_lengths_rhat, function(per_panel){
+    per_panel[[country]]
+  })})
+
+RMSE <- lapply(countries, function(country){
+  lapply(RMSE, function(per_panel){
+    per_panel[[country]]
+  })})
+
+CIs_k10 <- lapply(countries, function(country){
+  lapply(CIs_k10, function(per_panel){
+    per_panel[[country]]
+  })
+})
+```
+
+```{r plot CI length all k, echo = F}
 par(mfrow = c(2,2))
 for(country in countries){
   
   # Extract CI lengths and rhat for country
-  X <- CI_lengths_rhat[[country]]
+  per_country <- CI_lengths_rhat[[country]]
   
   # Extract range of CI lengths for null plot ylim
-  CI_length_range <- range(sapply(X, function(Y){
-    sapply(Y, function(x){x['CIlength',]}) 
+  CI_length_range <- range(sapply(per_country, function(per_panel){
+    sapply(per_panel, function(per_k){
+      sapply(per_k, function(per_r){
+        per_r['CIlength',]
+      }) 
+    })
   }))
   
   # Null plot CI length versus r for any k with panel overlaid
@@ -323,37 +246,59 @@ for(country in countries){
        ylab = 'Length of 95% confidence interval', 
        xlab = expression(hat(italic(r))))
   mtext(side = 3, text = 'All simulated k values', line = 0, cex = 0.5)
-  legend('bottom', inset = 0.01, legend = panels, pch = 20, col = cols_panels[panels])
+  legend('bottom', inset = 0.01, legend = panels, pch = 20, col = cols_panels[panels], 
+         cex = 0.5)
   
   for(panel in panels){
+    
+    Y <- sapply(per_country[[panel]],function(per_k){
+      sapply(per_k, function(per_r){
+        per_r['CIlength',]
+      })})
+    
+    X <- sapply(per_country[[panel]],function(per_k){
+      sapply(per_k, function(per_r){
+        per_r['rhat',]
+      })})
+    
     # Plot CI length versus r for any k
-    points(y = as.vector(sapply(X[[panel]], function(x){x['CIlength',]})),
-           x = as.vector(sapply(X[[panel]], function(x){x['rhat',]})), 
+    points(y = as.vector(Y),
+           x = as.vector(X), 
            pch = 20, 
            col = adjustcolor(cols_panels[panel], alpha.f = '0.5'))
   }
 }
 ```
 
-```{r plot CI lengths per k}
+
+
+
+```{r plot CI length per k, echo = F}
 # =======================================================
 # Plot CI lengths and rhat per country coloured by panel
 # (for all k combined)
 # =======================================================
-All_k_names <- names(CI_lengths_rhat[[1]][[1]])
-Unique_k_names <- unique(do.call(rbind, strsplit(All_k_names, split = ' '))[,1])
-par(mfrow = c(length(Unique_k_names), length(countries)))
+par(mfrow = c(length(ks), length(countries)))
 
-for(Unique_k_name in Unique_k_names){
+for(country in countries){
   
-  for(country in countries){
-    
-    # Extract CI lengths and rhat for country
-    X <- CI_lengths_rhat[[country]]
+  # Extract countries
+  per_country <- CI_lengths_rhat[[country]]
+  
+  # Re_organise s.t. k before panel
+  per_country <- lapply(ks, function(k){
+    lapply(per_country, function(per_panel){
+      per_panel[[k]]
+    })
+  })
+  
+  for(k in ks){
     
     # Extract range of CI lengths for null plot ylim
-    CI_length_range <- range(sapply(X, function(Y){
-      sapply(Y, function(x){x['CIlength',]}) 
+    CI_length_range <- range(sapply(per_country[[k]], function(per_panel){
+      sapply(per_panel, function(per_r){
+        per_r['CIlength',]
+      }) 
     }))
     
     # Null plot CI length versus r for any k with panel overlaid
@@ -361,45 +306,59 @@ for(Unique_k_name in Unique_k_names){
          main = country, 
          ylab = 'Length of 95% confidence interval', 
          xlab = expression(hat(italic(r))))
-    mtext(side = 3, text = Unique_k_name, line = 0, cex = 0.5)
-    legend('bottom', inset = 0.01, legend = panels, pch = 20, col = cols_panels[panels])
+    mtext(side = 3, text = k, line = 0, cex = 0.5)
+    legend('bottom', inset = 0.01, legend = panels, pch = 20, 
+           col = cols_panels[panels], cex = 0.5)
     
     for(panel in panels){
       
-      Y = X[[panel]]
+      Y <- sapply(per_country[[k]][[panel]],function(per_r){
+        per_r['CIlength',]
+      })
+      
+      X <- sapply(per_country[[k]][[panel]], function(per_r){
+        per_r['rhat',]
+      })
       
       # Search for names using paste s.t. k=1 doesn't return k=10 etc. 
-      ind <- which(grepl(paste(Unique_k_name, ''), names(Y)))
+      ind <- which(grepl(paste(k, ''), names(Y)))
       
       # Plot CI length versus r for any k
-      points(y = as.vector(sapply(ind, function(i){Y[[i]]['CIlength',]})),
-             x = as.vector(sapply(ind, function(i){Y[[i]]['rhat',]})), 
+      points(y = as.vector(Y),
+             x = as.vector(X), 
              pch = 20, 
              col = adjustcolor(cols_panels[panel], alpha.f = '0.5'))
     }
   }}
 ```
 
-```{r plot RMSE lengths over all ks}
+```{r plot RMSE all ks, echo = F}
 # =======================================================
 # Plot RMSE against rhat per country coloured by panel
 # (for all k combined)
 # =======================================================
 par(mfrow = c(2,2))
-ks <- rownames(RMSE[[1]][[1]])
 
 for(country in countries){
   
   # Extract CI lengths and rhat for country
-  Ylim <- range(unlist(RMSE[[country]]))
+  per_country <- RMSE[[country]]
+  
+  # Extract range of CI lengths for null plot ylim
+  RMSE_range <- range(sapply(per_country, function(per_panel){
+    sapply(per_panel, function(per_k){
+      range(per_k)
+    })
+  }))
+  
   
   # Null plot CI length versus r for any k with panel overlaid
-  plot(NULL, ylim = Ylim, xlim = c(0,1), 
+  plot(NULL, ylim = RMSE_range, xlim = c(0,1), 
        main = country, 
        ylab = 'RMSE', 
        xlab = expression(hat(italic(r))))
   mtext(side = 3, text = 'All simulated k values', line = 0, cex = 0.5)
-  legend('bottom', inset = 0.01,
+  legend('bottom', inset = 0.01, cex = 0.5, 
          legend = c(panels, paste('k =', ks )),
          pch = c(rep(NA, length(panels)), 1:length(ks)),
          lty = c(rep(1, length(panels)), rep(NA, length(ks))),
@@ -407,12 +366,12 @@ for(country in countries){
   
   for(panel in panels){
     
-    X <- RMSE[[country]][[panel]]
+    per_panel <- per_country[[panel]]
     
     for(k in ks){
       # Plot CI length versus r for any k
-      points(y = X[k,],
-             x = as.numeric(names(X[k,])), 
+      points(y = per_panel[[k]],
+             x = as.numeric(names(per_panel[[k]])), 
              pch = which(ks == k), type = 'b', 
              col = adjustcolor(cols_panels[panel], alpha.f = '0.5'))
     }
@@ -420,37 +379,43 @@ for(country in countries){
 }
 ```
 
-```{r plot RMSE lengths per k}
+```{r plot RMSE lengths per k, echo = F}
 # =======================================================
-# Plot RMSE against rhat per country coloured by panel
-# (for each k separately)
+# Plot RMSE against rhat per country coloured by panel per k
 # =======================================================
-ks <- rownames(RMSE[[1]][[1]])
 par(mfrow = c(length(ks),length(countries)))
 
-for(k in ks){
+
+for(country in countries){
   
-  for(country in countries){
+  # Extract countries
+  per_country <- RMSE[[country]]
+  
+  # Re_organise s.t. k before panel
+  per_country <- lapply(ks, function(k){
+    lapply(per_country, function(per_panel){
+      per_panel[[k]]
+    })
+  })
+  
+  for(k in ks){
     
-    # Extract CI lengths and rhat for country
-    Ylim <- range(unlist(RMSE[[country]]))
+    # Extract range of CI lengths for null plot ylim
+    RMSE_range <- range(unlist(per_country[[k]]))
     
     # Null plot CI length versus r for any k with panel overlaid
-    plot(NULL, ylim = Ylim, xlim = c(0,1), 
+    plot(NULL, ylim = RMSE_range, xlim = c(0,1), 
          main = country, 
          ylab = 'RMSE', 
          xlab = expression(hat(italic(r))))
     mtext(side = 3, text = sprintf('k = %s', k), line = 0, cex = 0.5)
-    legend('bottom', inset = 0.01, legend = panels,
+    legend('bottom', inset = 0.01, legend = panels, cex = 0.5, 
            lty = 'solid', col = cols_panels[panels])
     
     for(panel in panels){
-      
-      X <- RMSE[[country]][[panel]]
-      
       # Plot CI length versus r for any k
-      points(y = X[k,],
-             x = as.numeric(names(X[k,])), 
+      points(y = per_country[[k]][[panel]],
+             x = as.numeric(names(per_country[[k]][[panel]])), 
              pch = which(ks == k), type = 'b', 
              col = adjustcolor(cols_panels[panel], alpha.f = '0.5'))
       
@@ -458,108 +423,79 @@ for(k in ks){
   }
 }
 ```
-```{r}
+```{r plot RMSE per panel, echo = F}
 # Plot RMSE
-par(mfrow = c(3,length(countries)), mar = c(4,5,2,2), oma = rep(0,4), pty = 's')
+par(mfrow = c(length(panels),length(countries)), mar = c(4,5,2,2), oma = rep(0,4), pty = 's')
 
-for(country in countries[1:3]){
-  
-  load(sprintf('../RData/Sanger_Amplicon_SimResults_%s.Rdata', country))
-  
-  rs = colnames(RMSEk_results)
-  ks = rownames(RMSEk_results)
-  cols_rs = brewer.pal(length(rs)+2, palettes[country])[-(1:2)]
-  cols_ks = brewer.pal(length(ks)+2, palettes[country])[-(1:2)]
-  
-  # Error in the r parameter
-  matplot(t(RMSEr_results), type = 'b', pch = 20, lty = 1, col = cols_ks, panel.fist = grid(), 
-          ylab = expression('RMSE: relatedness,'~italic(r)), 
-          xlab = expression('Relatedness,'~italic(r)), 
-          xaxt = 'n', bty = 'n', ylim = c(0,0.16), main = country)
-  axis(side = 1, at = 1:length(rs), labels = rs)
-  legend('bottom', bty = 'n', lty = 1, pch = 20, col = cols_ks, inset = 0.05, cex = 0.75, 
-         legend = ks, title = expression('Switch rate parameter,'~italic(k)))
-  mtext(text = 'Sanger panel', line = -1, cex = 0.5)
-}
-# Add null plot to end of Sanger since missing mali
-plot(NULL, xlim = c(0,1), ylim = c(0,1), bty = 'n', xaxt = 'n', yaxt = 'n', ylab = '', xlab = '')
-
-
-for(rmCTSA in c(T,F)){
-  
-  for(country in countries){
+for(country in countries){
+  for(panel in panels){
     
-    if(rmCTSA){
-      load(sprintf('../RData/GTseq_rmCTSA_Amplicon_SimResults_%s.Rdata', countries[1]))
+    if(is.null(RMSE[[country]][[panel]])) {
+      # Add null plot 
+      plot(NULL, xlim = c(0,1), ylim = c(0,1), bty = 'n', xaxt = 'n', yaxt = 'n', ylab = '', xlab = '')
+      
     } else {
-      load(sprintf('../RData/GTseq_Amplicon_SimResults_%s.Rdata', countries[1]))
-    }
-    
-    rs = colnames(RMSEk_results)
-    ks = rownames(RMSEk_results)
-    cols_rs = brewer.pal(length(rs)+2, palettes[country])[-(1:2)]
-    cols_ks = brewer.pal(length(ks)+2, palettes[country])[-(1:2)]
-    
-    # Error in the r parameter
-    matplot(t(RMSEr_results), type = 'b', pch = 20, lty = 1, col = cols_ks, panel.fist = grid(), 
-            ylab = expression('RMSE: relatedness,'~italic(r)), 
-            xlab = expression('Relatedness,'~italic(r)), 
-            xaxt = 'n', bty = 'n', ylim = c(0,0.16), main = country)
-    axis(side = 1, at = 1:length(rs), labels = rs)
-    legend('bottom', bty = 'n', lty = 1, pch = 20, col = cols_ks, inset = 0.05, cex = 0.75, 
-           legend = ks, title = expression('Switch rate parameter,'~italic(k)))
-    if(rmCTSA){
-      mtext(text = 'GTseq rmCTSA', line = -1, cex = 0.5)
-    } else {
-      mtext(text = 'GTseq', line = -1, cex = 0.5)
+      
+      # Convert to matrix
+      RMSEk_results <- sapply(RMSE[[country]][[panel]], function(x) x)
+      
+      rs = rownames(RMSEk_results)
+      ks = colnames(RMSEk_results)
+      cols_rs = brewer.pal(length(rs)+2, palettes_countries[country])[-(1:2)]
+      cols_ks = brewer.pal(length(ks)+2, palettes_countries[country])[-(1:2)]
+      
+      # Error in the r parameter
+      matplot(RMSEk_results, type = 'b', pch = 20, lty = 1, col = cols_ks, panel.fist = grid(), 
+              ylab = expression('RMSE: relatedness,'~italic(r)), 
+              xlab = expression('Relatedness,'~italic(r)), 
+              xaxt = 'n', bty = 'n', main = country)
+      axis(side = 1, at = 1:length(rs), labels = rs)
+      legend('bottom', bty = 'n', lty = 1, pch = 20, col = cols_ks, inset = 0.05, cex = 0.5, 
+             legend = ks, title = expression('Switch rate parameter,'~italic(k)))
+      mtext(text = panel, line = -1, cex = 0.5)
     }
   }
-  
 }
 ```
 
-```{r plot CIs}
-#######################################################################
-#######################################################################
-par(mfrow = c(length(countries),5), 
+
+
+
+
+```{r plot CIs, echo = F}
+par(mfrow = c(length(countries),length(rs)), 
     mar = c(0,0,0,0), oma = c(4,4,2,2), 
     family = 'serif', pty = 'm')
 
-# Results corresponding to k=10 (assumes all results were generated for the same ks and rs)
-load(sprintf('../RData/%s_Amplicon_SimResults_%s.Rdata', panels[1], countries[1]))
-k10rs = names(PPair_results)[which(grepl("k=10 ", names(PPair_results)))]
-rs = as.numeric(gsub('r=', '', do.call(rbind, strsplit(k10rs, split = ' '))[,2]))
-
 for(country in countries){
-  for(k10r in k10rs){
-    for(panel in panels){
-      
-      try_error <- try(load(sprintf('../RData/%s_Amplicon_SimResults_%s.Rdata', 
-                                    panel, country)), silent = TRUE)
+  for(r in rs){
+    for(panel in rev(panels)){
       
       # Extract results
-      X = PPair_results[[k10r]]
-      rCIs = sapply(X, function(x)x[,'r'])
-      rest = rCIs['rkhat',]
-      rgen = as.numeric(gsub('r=', '', strsplit(k10r, split = ' ')[[1]][2])) # Data generating rs
+      per_i = CIs_k10[[country]][[panel]][[r]]
+      if (is.null(per_i)) next()
+      
+      restCIs = sapply(per_i, function(per_i) per_i['rhat',]) # Extract results for r
       
       # Order results
-      Order = sort.int(rest, index.return = T)$ix
+      Order = sort.int(restCIs['krhat',], index.return = T)$ix
       ADD = ifelse(country == countries[1], FALSE, TRUE)
+      nrep <- ncol(restCIs)
       
       # Plot results
-      if(panel == panels[1]){
-        plot(NULL, pch = 20, ylim = c(0,1), xlim = c(1,length(rest)), 
+      if(panel == rev(panels)[1]){
+        plot(NULL, pch = 20, ylim = c(0,1), xlim = c(1,nrep), 
              xaxt = 'n', yaxt = 'n', panel.first = grid())
       }
-      polygon(x = c(1:length(rest), length(rest):1), 
-              y = c(rCIs['2.5%', Order], rev(rCIs['97.5%', Order])),
+      polygon(x = c(1:nrep, nrep:1), 
+              y = c(restCIs['2.5%', Order], rev(restCIs['97.5%', Order])),
               col = cols_panels[panel], border = NA)
-      lines(rest[Order], col = 'white')
-      abline(h = rgen, col = 'black')
+      
+      lines(restCIs['krhat',Order], col = 'white')
+      abline(h = as.numeric(r), col = 'black')
       
       # Add title
-      if(k10r == k10rs[1]){
+      if(r == rs[1]){
         axis(side = 2, las = 1)
         title(main = country, line = -6)
       }
