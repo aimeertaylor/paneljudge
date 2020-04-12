@@ -1,17 +1,20 @@
 ---
-title: "paneljudge_multipanel_multicountry"
-output: rmarkdown::html_vignette
- vignette: >
- %\VignetteIndexEntry{paneljudge_multipanel_multicountry}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
- ---
-  
+title: "Multipanel multicountry comparison"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+
+The sanger barcode data used to generated the results plotted in this Rmarkdown were processed by Process_Sanger_Barcode.R
+The relatedness summaries plotted in this Rmarkdown script were generated Generate_results_multipanel_comparison.R
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-collapse = TRUE,
-comment = "#>", 
-fig.width = 12, fig.height = 12, fig.fullwidth = TRUE 
+  collapse = TRUE,
+  comment = "#>", 
+  fig.width = 12, fig.height = 12, fig.fullwidth = TRUE, 
+  cache = TRUE, cache.comments = FALSE 
 )
 ```
 
@@ -20,12 +23,21 @@ rm(list = ls())
 library(paneljudge)
 require(RColorBrewer)
 require(kableExtra)
+
+# Load panel data (markers and frequencies based on the GTseq panel are distributed with paneljudge)
+load("markers_sanger_barcode.RData")
+load("frequencies_sanger_barcode.RData")
+
+# Load relatedness results 
+load("mles_CIs_GTseq.RData")
+load("mles_CIs_onlyCTSA.RData")
+load("mles_CIs_GTseq_notCTSA.RData")
+load("mles_CIs_sanger_barcode.RData")
 ```
 
 ```{r}
 # Temporary hacks
 devtools::load_all()
-names(mles_CIs_sanger_barcode) <- c("Colombia", "French Guiana", "Senegal")
 ```
 
 ```{r specify colours and panels}

@@ -1,11 +1,17 @@
 ##############################################################################
-#' In this script we generate the results used in the vignette
-#' paneljudge_multipanel_comparison, since it would take too long to generate
-#' within the vignette itself.
+# In this script we generate the results presented in the Rmd
+# multipanel_multicountry.Rmd, since it would take too long (run overnight) to
+# generate within the Rmd itself.
 ##############################################################################
 rm(list = ls()) # Set up
 set.seed(1) # For reproducibility
+library(paneljudge)
 devtools::load_all()
+
+#' Load panel data (markers and frequencies based on the GTseq panel are
+#' distributed with paneljudge)
+load("markers_sanger_barcode.RData")
+load("frequencies_sanger_barcode.RData")
 
 #=============================================================================
 # Simulate n genotype pairs per country, r in rs, and k in ks
@@ -37,7 +43,7 @@ mles_CIs_GTseq <- lapply(frequencies, function(fs) {
     })
   })
 })
-#save(mles_CIs_GTseq, file = '../data/mles_CIs_GTseq.RData')
+save(mles_CIs_GTseq, file = 'mles_CIs_GTseq.RData')
 
 # ----------------------------------------------------------------------------
 # Simulate GTseq without CTSA
@@ -56,7 +62,7 @@ mles_CIs_GTseq_notCTSA <- lapply(frequencies, function(fs) {
     })
   })
 })
-#save(mles_CIs_GTseq_notCTSA, file = '../data/mles_CIs_GTseq_notCTSA.RData')
+save(mles_CIs_GTseq_notCTSA, file = 'mles_CIs_GTseq_notCTSA.RData')
 
 # ----------------------------------------------------------------------------
 # Simulate CTSA only
@@ -75,7 +81,7 @@ mles_CIs_onlyCTSA <- lapply(frequencies, function(fs) {
     })
   })
 })
-#save(mles_CIs_onlyCTSA, file = '../data/mles_CIs_onlyCTSA.RData')
+save(mles_CIs_onlyCTSA, file = 'mles_CIs_onlyCTSA.RData')
 
 # ----------------------------------------------------------------------------
 # Simulate sanger barcode
@@ -93,8 +99,6 @@ mles_CIs_sanger_barcode <- lapply(frequencies_sanger_barcode, function(fs) {
     })
   })
 })
-#save(mles_CIs_sanger_barcode, file = '../data/mles_CIs_sanger_barcode.RData')
-
-mles_CIs_sanger_barcode$Columbia$`1`$`0.01`
+save(mles_CIs_sanger_barcode, file = 'mles_CIs_sanger_barcode.RData')
 
 
