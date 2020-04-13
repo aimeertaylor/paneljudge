@@ -40,7 +40,7 @@ For relatedness inference, panels with many, evenly spaced and highly diverse ma
 m <- nrow(markers) # Number of markers
 num_chr <- length(unique(markers$chrom)) # Number of chromosomes
 max_chr <- max(markers$chrom) # Max. number of chromosomes
-av_marker_length <- mean(markers$length) # Average marker length
+av_marker_length <- mean(markers$length) # Average marker lengtah
 sd_marker_length <- sd(markers$length) # Standard deviation of marker length
 
 # Do any marker starts preceed the stop of the previous marker? 
@@ -48,6 +48,10 @@ overlap <- (sapply(unique(markers$chrom), function(chr){ # For each chromosome
   ind <- markers$chrom == chr # chromosom indicators 
   any(markers$Start[ind][-1] - markers$Stop[ind][-sum(ind)] < 0) 
 }))
+
+# Single out CTSA from the GTseq panel
+CTSA = markers$Amplicon_name[grepl("z", markers$Amplicon_name)]
+CTSA_ind = which(markers$Amplicon_name %in% CTSA)
 ```
 
 The example panel has `r m` markers distributed across `r num_chr` of `r max_chr` chromosomes: 
@@ -58,19 +62,19 @@ par(mar = c(5.1,4.1,1,1))
 plot(markers$pos, markers$chrom, pch = "|", las = 1,
      ylab = 'Chromosome', xlab = 'Chromosomal position (base pair)')
 
+# Add chromosome lengths
 for(chr in unique(markers$chrom)){
-  
-  # Add chromosome lengths
   segments(x0 = 0, x1 = chr_lengths[chr], y0 = chr, y1 = chr)
-  
-  # Add applicon positions (barely visible on whole genome scale)
-  ind <- markers$chrom == chr
-  segments(x0 = markers$Start[ind], x1 = markers$Stop[ind],
-           y0 = chr, y1 = chr, col = 'white')
 }
+
+# Add CTSA annotations from GTseq panel
+text(x = markers$pos[CTSA_ind], 
+     y = markers$chrom[CTSA_ind], 
+     labels = gsub('z', '', CTSA), 
+     pos = 3, offset = 0.5, cex = 0.5)
 ```
 
-The markers in the example panel are microhaplotypes: short, highly diverse regions of the genome whose length can be spanned by a single amplicon. The white marks in the above plot mark the region spanned by each (marker/amplicon? - check). They are barely visible due to their small size (average `r round(av_marker_length)` base pairs; standard deviation: `r round(sd_marker_length)` base pairs). Unfortunately, some markers are very close together (minimum distance between marker mid-points `r min(markers$distances)` base pairs). However, none overlap: 
+The markers in the example panel are microhaplotypes: short, highly diverse regions of the genome whose length can be spanned by a single amplicon. The positions of four of the microhaplotypes (TRAP, AMA1, CSP and SERA2) are annotated. The white marks in the above plot mark the region spanned by each (marker/amplicon? - check). They are barely visible due to their small size (average `r round(av_marker_length)` base pairs; standard deviation: `r round(sd_marker_length)` base pairs). Unfortunately, some markers are very close together (minimum distance between marker mid-points `r min(markers$distances)` base pairs). However, none overlap: 
 
 ```{r overlap}
 writeLines(sprintf("Do any marker starts preceed the stop of the previous marker? %s", any(overlap)))
