@@ -4,7 +4,7 @@ author: "Aimee R Taylor"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{paneljudge_freestanding_example}
+  %\VignetteIndexEntry{paneljudge_example}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: ref.bib
@@ -36,7 +36,6 @@ set.seed(1) # For reproducibility
 # Marker summaries
 
 For relatedness inference, panels with many, evenly spaced and highly diverse markers are informative @taylor2019.  
-
 ```{r marker count}
 m <- nrow(markers) # Number of markers
 num_chr <- length(unique(markers$chrom)) # Number of chromosomes
