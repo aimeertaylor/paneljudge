@@ -40,8 +40,8 @@ load('All_Sanger_Amplicon_Haplotype_Frqs.RData')
 
 # Convert Start and Stop columns to numeric
 # This problem was not encountered in Process_GTseq.R
-amp_frqs$Start <- as.numeric(amp_frqs$Start)
-amp_frqs$Stop <- as.numeric(amp_frqs$Start)
+amp_frqs$Start <- as.numeric(as.character(amp_frqs$Start))
+amp_frqs$Stop <- as.numeric(as.character(amp_frqs$Start))
 
 # Convert factor columns. Do not use apply (e.g. apply(amp_frqs, 2, is.factor))
 # since apply converts data.frame to matrix and surreptitiously convert factors
