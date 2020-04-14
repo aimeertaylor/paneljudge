@@ -28,7 +28,7 @@ The intended usage of the **paneljudge** package is to judge the performance of 
 
 At present, we do not consider model misspecification; we do not account for uncertainty around input allele frequency estimates; we do not consider relatedness between pairs of haploid genotypes simulated using different allele frequencies; we do not account for marker drop-out (markers that fail to produce useful data, e.g. because they a monomorphic). Otherwise stated, at present, the performance of a panel is judged in its most favourable light; it will likely perform less well in reality. 
 
-The package is very minimal. To see its full range of capabilities, simply load and attach **paneljudge**, then read the **paneljudge** vignette (see code below). You can also follow the example analysis stored in https://github.com/artaylor85/paneljudge/tree/master/Analysis_multipanel_multicountry/ by reading the multipanel_multicountry.pdf and consulting the R markdown script that generated it multipanel_multicountry.Rmd. 
+The package is very minimal. To see its full range of capabilities, simply load and attach **paneljudge**, then read the **paneljudge** vignette (see code below). You can also follow the example analysis stored in https://github.com/artaylor85/paneljudge/tree/master/Analysis_multipanel_multicountry/ by reading the multipanel_multicountry.pdf and consulting the R markdown script that generated it (multipanel_multicountry.Rmd). 
 
 ```r
 # Load and attach package
@@ -44,7 +44,7 @@ vignette("paneljudge_example")
 Possible future additions to the package are listed below. If you would like to contribute, see **Contributing** below or email ataylor@hsph.harvard.edu. 
 
 
-![A plot of confidence intervals around relatedness estimates based on data simulated for four different panels using frequencies from four different countries](https://github.com/artaylor85/paneljudge/blob/master/Analysis_multipanel_multicountry/multipanel_multicountry_files/figure-latex/plot%20CIs-1.pdf)
+![An example plot of confidence intervals around relatedness estimates based on data simulated for four different panels using frequencies from four different countries](https://github.com/artaylor85/paneljudge/blob/master/Analysis_multipanel_multicountry/multipanel_multicountry_files/figure-latex/plot%20CIs-1.pdf)
 
 
 ## Future work
