@@ -84,7 +84,7 @@ text(x = markers$pos[CTSA_ind],
      pos = 3, offset = 0.5, cex = 0.5)
 ```
 
-The markers in the example panel are microhaplotypes: short regions of the genome (whose length can be spanned by a single amplicon) that are highly diverse due to many single nucleotide polymorphisms that are close to one another. The positions of four of the microhaplotypes (TRAP, AMA1, CSP and SERA2) are annotated. Although the microhaplotypes are polymorphisms with physical length, we plot them as points (using their mid-points), since their lengths are barely visible on the above scale due to their small size (average `r round(av_marker_length)` base pairs; standard deviation: `r round(sd_marker_length)` base pairs). Some markers are very close together (minimum distance between marker mid-points `r min(markers$distances)` base pairs). However, none overlap: 
+The markers in the example panel are microhaplotypes: short regions of the genome (whose length can be spanned by a single amplicon) that contain two of more SNPs. The positions of four of the microhaplotypes (TRAP, AMA1, CSP and SERA2) are annotated. Although the microhaplotypes are polymorphisms with physical length, we plot them as points (using their mid-points), since their lengths are barely visible on the above scale due to their small size (average `r round(av_marker_length)` base pairs; standard deviation: `r round(sd_marker_length)` base pairs). Some markers are very close together (minimum distance between marker mid-points `r min(markers$distances)` base pairs). However, none overlap: 
 
 ```{r overlap}
 writeLines(sprintf("Do any marker starts preceed the stop of the previous marker? %s", any(overlap)))
