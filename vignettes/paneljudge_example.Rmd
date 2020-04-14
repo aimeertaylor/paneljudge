@@ -17,6 +17,16 @@ In this vignette, to illustrate the functionality of the R package **paneljudge*
 
 First we provide a summary of the example panel in terms of its marker count, and its markers' positions, diversities, effective cardinalities and cardinalities. These quantities provide a rough idea of how informative the panel is regarding relatedness inference @taylor2019. Second, we simulate and fit data under the hidden Markov model (HMM) described in @taylor2019. The second step provides a more direct summary of how informative the panel is regarding relatedness inference. 
 
+At present, we do not consider model misspecification; we do not account for uncertainty around input allele frequency estimates; we do not consider relatedness between pairs of haploid genotypes simulated using different allele frequencies; we do not account for marker drop-out (markers that fail to produce useful data, e.g. because they a monomorphic). Otherwise stated, at present, the performance of a panel is judged in its most favourable light; it will likely perform less well in reality.
+
+## Glossary
+
+A quick note regarding terminology before we begin. In this vignette, a "marker" refers to a genetic polymorphism that can be typed in order to characterise population genetic variation, while "allele" is used to refer to a realisation of a marker for a particular individual. Examples of markers include single nucleotide polmorphisms (SNPs), microsatellited, and microhaplotypes. The latter refers to a region of the genome that encompasses two or more SNPs and is small enough to be typed using an amplicon (a chemical by-product of genotyping). Examples of alleles include a nucleotide base at a SNP, an amino acid at a non-synonmous SNP, a repeat length at a microsatellite and a sequence of nucleotide bases at a microhaplotype. Arguably, it would be more intuitive to use microhaplotype to refer to an allele at a marker that is a genome region encompasses a SNP multiplet, and to use amplicon to refer to said marker. However, an amplicon is a chemincal by-product of genotyping (not a biological entity), and can be used to type single SNPs as well as SNP multiplets. As such, and for consistency with @taylor2019, microhaplotype is used to refer to the marker. 
+
+We use "markers" and "alleles" in order to be as general as possible. The HMM on which package **paneljudge** relies does not care if markers are SNPs, microsatellites or microhaplotypes as long as they can be modelled as categorical random variables whose realisations (i.e. alleles) are unordered. To this end, microsatellites and microhaplotypes are treated as point polymorphims and their alleles are enumerated. Enumeration serves only to label the relisations. As such, the ordinal nature of microsatellite alleles is not accounted for even if repeat lengths are enumerated in increasing order. 
+
+
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -74,7 +84,7 @@ text(x = markers$pos[CTSA_ind],
      pos = 3, offset = 0.5, cex = 0.5)
 ```
 
-The markers in the example panel are microhaplotypes: short, highly diverse regions of the genome whose length can be spanned by a single amplicon. The positions of four of the microhaplotypes (TRAP, AMA1, CSP and SERA2) are annotated. The white marks in the above plot mark the region spanned by each (marker/amplicon? - check). They are barely visible due to their small size (average `r round(av_marker_length)` base pairs; standard deviation: `r round(sd_marker_length)` base pairs). Unfortunately, some markers are very close together (minimum distance between marker mid-points `r min(markers$distances)` base pairs). However, none overlap: 
+The markers in the example panel are microhaplotypes: short regions of the genome (whose length can be spanned by a single amplicon) that are highly diverse due to many single nucleotide polymorphisms that are close to one another. The positions of four of the microhaplotypes (TRAP, AMA1, CSP and SERA2) are annotated. Although the microhaplotypes are polymorphims with physical length, we plot them as points (using their mid-points), since their lengths are barely visible on the above scale due to their small size (average `r round(av_marker_length)` base pairs; standard deviation: `r round(sd_marker_length)` base pairs). Some markers are very close together (minimum distance between marker mid-points `r min(markers$distances)` base pairs). However, none overlap: 
 
 ```{r overlap}
 writeLines(sprintf("Do any marker starts preceed the stop of the previous marker? %s", any(overlap)))
@@ -190,7 +200,7 @@ legend('topleft', lty = 1, col = c('black', 'blue'), inset = 0.01,
 
 # Simulated data  
 
-Using the example panel and marker allele frequencies, for various data-generating values of relatedness, $r$, we first simulate some data on a pair of haploid genotypes; second estimate $r$ (and a switch rate parameter, $k$, whose data-generating value is fixed in this vignette); and third compute 95\% confidence intervals (CIs) around the estimates $\hat{r}$ and $\hat{k}$:
+Using the example panel and marker allele frequencies, for various data-generating values of relatedness, $r$, we first simulate some data on a pair of haploid genotypes; second estimate $r$ (and a switch rate parameter, $k$, whose data-generating value is fixed in this vignette; see footnote); and third compute 95\% confidence intervals (CIs) around the estimates $\hat{r}$ and $\hat{k}$:
 
 ```{r, echo = T}
 #=============================================================
@@ -244,7 +254,7 @@ mtext(side = 2, outer = T, text = expression(hat(italic(r))), line = 3)
 legend('center', lwd = 1, legend = expression("data-generating"~italic(r)), bty = 'n', cex = 0.75)
 ```
 
-The variation in $\hat{r}$ around the data-generating $r$ (black horizontal line) is partly due to limited panel informativeness and partly due to the finite length of the genome, i.e. Mendelian sampling @hill2011. Whole genome simulation is required to partition these two sources of variation (see note below).
+The variation in $\hat{r}$ around the data-generating $r$ (black horizontal line) is partly due to limited panel informativeness and partly due to the finite length of the genome, i.e. Mendelian sampling @hill2011. Whole genome simulation is required to partition these two sources of variation; see footnote below.
 
 Instead of plotting the CIs directly, we can plot the CI widths as a indicator of informativeness (an uninformative CI having width one). Since `r n` haploid genotype pairs were simulated per data-generating value of $r$, we can also compute and plot the root mean square error (RMSE) as an measure of informativeness.
 
@@ -275,7 +285,7 @@ plot(y = RMSEs, x = rs, type = 'b', pch = 20,
      ylab = expression("Root mean square error given data-generating"~italic(r)))
 ```
 
-## Mendelian sampling 
+## Footnote: Mendelian sampling 
 
 Relatedness, $r$, is defined as a probability of identity-by-descent (IBD) averaged over the genome @taylor2019. It differs to realised relatedness, which is the fraction of the genome that is IBD, due to the finite length of the genome (i.e. due to Mendelian sampling @hill2011): for a genome of finite length many realised relatednesses are compatible with a given probability of IBD, meaning that there will always be some variance in realised relatedness around $r$. Consequently, the RMSE of $\hat{r}$ compared to the data-generating $r$ (and the width of a CI computed using the parametric bootstrap) asymptotes to some small but non-zero value when more and more markers are typed @taylor2019. 
 
@@ -285,6 +295,10 @@ Considering a panel with a finite marker count, variation in $\hat{r}$ around th
 2. compute realised relatedness by averaging over latent IBD states; 
 3. infer relatedness using only data simulated at the panel markers;
 4. compare $\hat{r}$ to realised relatedness. 
+
+## Footnote: switch rate parameter
+
+The switch rate parameter, $k$, controls the rate at which the Markov chain switches between the latent states (IBD and not IBD) in the HMM @taylor2019. When considering data on a limited number of markers in a panel (versus whole genome sequence data), we treat the switch rate as a nuisance parameter (since it has little effect on the estimate, $\hat{r}$, yet is near-on impossible to estimate precisely without whole genome sequence data), focusing instead on the relatedness parameter $r$.
 
 
 # References
