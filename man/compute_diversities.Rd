@@ -20,17 +20,17 @@ maximum cardinality exceeds that of the \eqn{t}-th marker (i.e. if
 Diversities for \eqn{t = 1,\ldots,m} markers.
 }
 \description{
-Given a matrix of marker allele frequencies, \code{compute_diversities} returns the
-diversities of \eqn{t = 1,...,m} markers, where \eqn{m} is the marker count.
-Each diversity is calculated as described in [1], i.e.
-without correcting for finite sample sizes or considering uncertainty.
+Given a matrix of marker allele frequencies, \code{compute_diversities}
+returns the diversities of \eqn{t = 1,...,m} markers, where \eqn{m} is the
+marker count. Each diversity is calculated as described in [1], i.e. without
+correcting for finite sample sizes or considering uncertainty.
 }
 \examples{
 compute_diversities(fs = frequencies$Colombia)
 
 }
 \references{
-\enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and Buckee, C.O., 2019.
-  Estimating relatedness between malaria parasites. Genetics, 212(4),
-  pp.1337-1351.}
+\enumerate{ \item Taylor, A.R., Jacob, P.E., Neafsey, D.E. and
+  Buckee, C.O., 2019. Estimating relatedness between malaria parasites.
+  Genetics, 212(4), pp.1337-1351.}
 }
