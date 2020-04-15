@@ -14,7 +14,7 @@ The panels compared in this R markdown script include the GTseq panel (\texttt{G
 
 The frequencies of the GTseq panel and its derivations are based on sample data collected in Colombia, French Guiana, Senegal and Mali. At present, the frequencies of the Sanger panel are based on sample data collected in Colombia, French Guiana and Senegal, but not Mali. Sample data are not included in this example analysis nor the distribution of the **paneljudge** package. 
 
-There is substantial overlap (code and text) between this Rmd file and the paneljudge vignette, which is more pedagogical. To see the code, please consult \texttt{multipanel\_multicountry.Rmd}. 
+There is substantial overlap (code and text) between this Rmd file and the paneljudge vignette, which is more pedagogical. To see all the source code used to generate \texttt{multipanel\_multicountry.pdf}, please consult \texttt{multipanel\_multicountry.Rmd}. To see the paneljudge vignette and all of its code, type `vignette("paneljudge_example")` and `edit(vignette("paneljudge_example"))`. 
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -32,7 +32,6 @@ rm(list = ls())
 require(RColorBrewer)
 require(kableExtra)
 library(paneljudge)
-devtools::load_all() # Temporary hack
 
 # Load sanger barcode data (external to paneljudge package)
 load("markers_sanger_barcode.RData")
