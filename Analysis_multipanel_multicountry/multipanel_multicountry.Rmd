@@ -602,7 +602,7 @@ for(country in countries){
          main = country, 
          ylab = 'Length of 95% confidence interval', 
          xlab = expression(hat(italic(r))))
-    mtext(side = 3, text = expression('k'==k), line = 0, cex = 0.5)
+    mtext(side = 3, text = sprintf('k = %s',k), line = 0, cex = 0.5)
     legend('bottom', inset = 0.01, legend = panels, pch = 20, 
            col = cols_panels[panels], cex = 0.5)
     
@@ -652,8 +652,8 @@ for(country in countries){
   # Null plot CI length versus r for any k with panel overlaid
   plot(NULL, ylim = RMSE_range, xlim = c(0,1), 
        main = country, 
-       ylab = 'RMSE', 
-       xlab = expression(hat(italic(r))))
+       ylab = expression('RMSE of'~italic(hat(r))~'around data-generating'~italic(r)), 
+         xlab = expression('data-generating'~italic(r)))
   mtext(side = 3, text = 'All simulated k values', line = 0, cex = 0.5)
   legend('bottom', inset = 0.01, cex = 0.5, 
          legend = c(panels, paste('k =', ks )),
@@ -704,20 +704,20 @@ for(country in countries){
     # Null plot CI length versus r for any k with panel overlaid
     plot(NULL, ylim = RMSE_range, xlim = c(0,1), 
          main = country, 
-         ylab = 'RMSE', 
-         xlab = expression(hat(italic(r))))
-    mtext(side = 3, text = sprintf('k = %s', k), line = 0, cex = 0.5)
-    legend('bottom', inset = 0.01, legend = panels, cex = 0.5, 
-           lty = 'solid', col = cols_panels[panels])
-    
-    for(panel in panels){
-      # Plot CI length versus r for any k
-      points(y = per_country[[k]][[panel]],
-             x = as.numeric(names(per_country[[k]][[panel]])), 
-             pch = which(ks == k), type = 'b', 
-             col = adjustcolor(cols_panels[panel], alpha.f = '0.5'))
-      
-    }
+         ylab = expression('RMSE of'~italic(hat(r))~'around data-generating'~italic(r)), 
+         xlab = expression('data-generating'~italic(r))) 
+         mtext(side = 3, text = sprintf('k = %s', k), line = 0, cex = 0.5)
+         legend('bottom', inset = 0.01, legend = panels, cex = 0.5, 
+                lty = 'solid', col = cols_panels[panels])
+         
+         for(panel in panels){
+           # Plot CI length versus r for any k
+           points(y = per_country[[k]][[panel]],
+                  x = as.numeric(names(per_country[[k]][[panel]])), 
+                  pch = which(ks == k), type = 'b', 
+                  col = adjustcolor(cols_panels[panel], alpha.f = '0.5'))
+           
+         }
   }
 }
 ```
@@ -747,8 +747,8 @@ for(country in countries){
       
       # Error in the r parameter
       matplot(RMSEk_results, type = 'b', pch = 20, lty = 1, col = cols_ks, panel.fist = grid(), 
-              ylab = expression('RMSE: relatedness,'~italic(r)), 
-              xlab = expression('Relatedness,'~italic(r)), 
+              ylab = expression('RMSE of'~italic(hat(r))~'around data-generating'~italic(r)), 
+              xlab = expression('data-generating'~italic(r)), 
               xaxt = 'n', bty = 'n', main = country)
       axis(side = 1, at = 1:length(rs), labels = rs)
       legend('bottom', bty = 'n', lty = 1, pch = 20, col = cols_ks, inset = 0.05, cex = 0.5, 
