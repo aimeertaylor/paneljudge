@@ -17,7 +17,7 @@ In this vignette, to illustrate the functionality of the R package **paneljudge*
 
 First we provide a summary of the example panel in terms of its marker count, and its markers' positions, diversities, effective cardinalities and cardinalities. These quantities provide a rough idea of how informative the panel is regarding relatedness inference @taylor2019. Second, we simulate and fit data under the hidden Markov model (HMM) described in @taylor2019. The second step provides a more direct summary of how informative the panel is regarding relatedness inference. 
 
-At present, we do not consider model specification; we do not account for uncertainty around input allele frequency estimates; we do not consider relatedness between pairs of haploid genotypes simulated using different allele frequencies; we do not account for marker drop-out (markers that fail to produce useful data, e.g. because they a monomorphic). Otherwise stated, at present, the performance of a panel is judged in its most favourable light; it will likely perform less well in reality.
+At present, our example analyses do not consider model specification; do not account for uncertainty around input allele frequency estimates; do not consider relatedness between pairs of haploid genotypes simulated using different allele frequencies; do not account for marker drop-out (markers that fail to produce useful data, e.g. because they a monomorphic). Otherwise stated, at present, the performance of a panel is judged in its most favourable light; it will likely perform less well in reality.
 
 To view all the source code for this vignette, including that used to generate the plots, simply type `edit(vignette("paneljudge_example"))`. 
 
