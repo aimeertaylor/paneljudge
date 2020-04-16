@@ -14,12 +14,12 @@
 # ************************ IMPORTANT ***************************
 # In the data on the sanger barcode provided by Tim June 2019, alleles per
 # marker were not ordered by their frequencies. After this script, if
-# frequencies are reordered per marker (this is a
-# requirement of the HMM of [1]), numbered
-# alleles per marker may refer to a different sequences of nucleotides across
+# frequencies are reordered per marker (this is a compute
+# requirement of the HMM of [1], not a statistically requirement), numbered
+# alleles per marker may refer to a different alleles across
 # countries, e.g. "Allele.1" of the first marker in Senegal and "Allele.1" of
-# the first marker in Colombia may correspond to different nucleotide
-# sequences. This is not a problem since data on each country should be
+# the first marker in Colombia may correspond to different nucleotides.
+# This is not a problem since data on each country should be
 # simulated and analysed separately using the HMM of [1]. It would be a problem
 # if we estimated relatedness between parasite from different populations,
 # however, e.g. using hmmIBD.
