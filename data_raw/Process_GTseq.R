@@ -6,11 +6,18 @@
 # ~/Documents/
 #
 # The example raw input data include marker positions and allele frequency
-# estimates. The markers are microhaplotypes that are typed using amplicons,
-# hence "amp_freq". Note that microhaplotypes are not point mutations: they are
-# regions of the genome that are highly diverse. To simulate microhaplotype
-# data under the HMM model [1] each marker region is reduced to a single point:
-# its middle position.
+# estimates (see the glossary of vignette('paneljudge_example') to better
+# understand terms. In this example the markers are microhaplotypes that are
+# typed using amplicons, hence "amp_freq". Note that microhaplotypes are not
+# point mutations: they are regions of the genome that contain two or more
+# single nucleotide polymorphisms (SNPs), and their alleles are sequences of
+# nucleotide base pairs. For example, a micohaplotype spanning two biallelic
+# SNPs whose nucleotides are either A or T could have up to four alleles: AA,
+# AT, TA and TT, whose frequencies among monoclonal samples could be calculated
+# by simply counting observed alleles, e.g. frequency of AA = n(AA) / n(AA),
+# n(AT) + n(TA) + n(TT), where n(AA) is the count of AA observations etc. To
+# simulate microhaplotype data under the HMM model [1], distances between
+# markers are based on their middle positions.
 #
 # Tim's notes (copied from slack): This file contains Senegal, Columbia, French
 # Guiana, and Mali data. For some amplicons, there was no variation in some
@@ -25,14 +32,16 @@
 #
 # ******************************* IMPORTANT ********************************
 # In the following we refer to Tim's Genotype.1 as Allele.1 etc. As mentioned
-# above, alleles per marker are ordered by their frequencies (this is a
-# requirement of the HMM of [1]). As such, the names of the alleles per
-# marker (Allele.1, Allele.2, etc.) likely correspond to different
-# microhaplotype SNP sequences in different countries, e.g. the most common
-# allele in Sengal may differ to that in Colombia. This is not a problem since
-# data on each country should be simulated and analysed separately using the
-# HMM of [1]. It would be a problem if we estimated relatedness between
-# parasite from different populations, however, e.g. using hmmIBD.
+# above, alleles per marker are ordered by their frequencies (this is a compute
+# requirement of the HMM of [1], not a statistical requirement; statistically,
+# alleles under the HMM of [1] are modelled as realisations of unordered
+# categorgical random variables). As such, the names of the alleles per marker
+# (Allele.1, Allele.2, etc.) likely correspond to different microhaplotype
+# nucleotide sequences in different countries, e.g. the most common allele in
+# Sengal may differ to that in Colombia. This is not a problem since data on
+# each country should be simulated and analysed separately using the HMM of
+# [1]. It would be a problem if we estimated relatedness between parasite from
+# different populations, however, e.g. using hmmIBD.
 # **************************************************************************
 ############################################################################
 rm(list = ls())
