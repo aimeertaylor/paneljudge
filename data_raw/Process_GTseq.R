@@ -14,10 +14,13 @@
 # nucleotide base pairs. For example, a micohaplotype spanning two biallelic
 # SNPs whose nucleotides are either A or T could have up to four alleles: AA,
 # AT, TA and TT, whose frequencies among monoclonal samples could be calculated
-# by simply counting observed alleles, e.g. frequency of AA = n(AA) / n(AA),
-# n(AT) + n(TA) + n(TT), where n(AA) is the count of AA observations etc. To
-# simulate microhaplotype data under the HMM model [1], distances between
-# markers are based on their middle positions.
+# by simply counting observed alleles, e.g. frequency of AA
+#
+# fAA = n(AA) / [n(AA) + n(AT) + n(TA) + n(TT)],
+#
+# where n(AA) is the count of AA observations etc. To simulate microhaplotype
+# data under the HMM model [1], distances between markers are based on their
+# middle positions.
 #
 # Tim's notes (copied from slack): This file contains Senegal, Columbia, French
 # Guiana, and Mali data. For some amplicons, there was no variation in some
