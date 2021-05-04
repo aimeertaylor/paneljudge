@@ -75,4 +75,4 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 [2] Schaffner et al. Malaria journal 17.1 (2018): 196.
 
 ## Acknowledgements 
-Thank you to Emily LaVerriere for useful feedback. 
+Thank you to Emily LaVerriere for useful feedback. Aimee R. Taylor is supported by a Maximizing Investigators Research Award for Early Stage Investigators (R35 GM-124715, awarded to Caroline O. Buckee). Pierre E. Jabob gratefully acknowledges support from the National Science Foundation through grant DMS-1712872 and the Harvard Data Science Initiative.
