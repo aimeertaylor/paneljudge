@@ -72,6 +72,8 @@ estimate_r_and_k <- function(fs, ds, Ys, epsilon = 0.001, rho = 7.4 * 10 ^ (-7),
   # Convert to a into matrix if not already (loglikelihood_cpp expects a matrix)
   if (!is.matrix(fs)) fs <- as.matrix(fs)
 
+  if(any(is.na(Ys))) stop("Missing values detected in Ys.\n  Please remove and recompute ds accordingly.")
+
   # Define the function to pass to optim()
   ll <- function(k, r) loglikelihood_cpp(k, r, Ys, fs, ds, epsilon, rho)
 
