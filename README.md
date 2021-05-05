@@ -58,7 +58,7 @@ Possible future additions to the package are listed below. If you would like to 
 
 
 ## Future work
-- Add tests, errors and warnings for unexpected input (frequencies etc.) 
+- Add tests, errors and warnings for unexpected input (NA frequencies, miss-ordered distances etc.) 
 - Add Rshiny plot of marker positions with dynamic annotations inc. marker name, effective cardinality, diversity etc. 
 - Integrate hmmIBD [2].
 
