@@ -57,6 +57,7 @@
 ###########################################################################
 simulate_Ys <- function(fs, ds, k, r, epsilon = 0.001, rho = 7.4 * 10 ^ (-7)) {
 
+  fs_checks(fs) # Check frequencies
   m <- dim(fs)[1] # Extract marker count
   Kmax <- dim(fs)[2] # Extract Kmax
   Ys <- matrix(NA, nrow = m, ncol = 2) # Create simulated data store

@@ -69,6 +69,9 @@
 compute_r_and_k_CIs <- function(fs, ds, khat, rhat, confidence = 95, nboot = 100,
                                 core_count = parallel::detectCores() - 1, ...) {
 
+  # Check frequencies
+  fs_checks(fs)
+
   # Retrieve all additional parameters
   all_params <- list(...)
 

@@ -29,6 +29,7 @@
 #' @export
 ###########################################################################
 compute_eff_cardinalities <- function(fs) {
+  fs_checks(fs) # Check frequencies
   eff_cardinalities <- 1 / rowSums(fs^2)
   return(eff_cardinalities)
 }
@@ -63,6 +64,7 @@ compute_eff_cardinalities <- function(fs) {
 #' @export
 ###########################################################################
 compute_diversities <- function(fs) {
+  fs_checks(fs) # Check frequencies
   diversities <- 1 - rowSums(fs^2)
   return(diversities)
 }
