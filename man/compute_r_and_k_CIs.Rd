@@ -22,7 +22,7 @@ Specifically, a \eqn{m} by \eqn{Kmax} matrix, where \eqn{m} is the marker
 count and \eqn{Kmax} is the maximum cardinality (per-marker allele count)
 observed over all \eqn{m} markers. If, for any \eqn{t = 1,...,m}, the
 maximum cardinality exceeds that of the \eqn{t}-th marker (i.e. if
-\eqn{Kmax > Kt}), then all \code{fs[t,1:Kt]} are in (0,1) and all
+\eqn{Kmax > Kt}), then all \code{fs[t,1:Kt]} are in (0,1] and all
 \code{fs[t,(Kt+1):Kmax]} are zero. For example, if \eqn{Kt = 2} and
 \eqn{Kmax = 4} then \code{fs[t,]} might look like \code{[0.3, 0.7, 0, 0]}.}
 

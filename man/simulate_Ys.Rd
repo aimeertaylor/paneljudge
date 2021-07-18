@@ -12,7 +12,7 @@ Specifically, a \eqn{m} by \eqn{Kmax} matrix, where \eqn{m} is the marker
 count and \eqn{Kmax} is the maximum cardinality (per-marker allele count)
 observed over all \eqn{m} markers. If, for any \eqn{t = 1,...,m}, the
 maximum cardinality exceeds that of the \eqn{t}-th marker (i.e. if
-\eqn{Kmax > Kt}), then all \code{fs[t,1:Kt]} are in (0,1) and all
+\eqn{Kmax > Kt}), then all \code{fs[t,1:Kt]} are in (0,1] and all
 \code{fs[t,(Kt+1):Kmax]} are zero. For example, if \eqn{Kt = 2} and
 \eqn{Kmax = 4} then \code{fs[t,]} might look like \code{[0.3, 0.7, 0, 0]}.}
 
@@ -26,9 +26,9 @@ different markers are also considered infinite, i.e. if the chromosome of
 marker \eqn{t+1} is not equal to the chromosome of \eqn{t}-th marker,
 \code{ds[t] = Inf}.}
 
-\item{k}{data-generating switch rate parameter, i.e. \eqn{k} in [1].}
+\item{k}{Data-generating switch rate parameter, i.e. \eqn{k} in [1].}
 
-\item{r}{data-generating relatedness parameter, i.e. \eqn{r} in [1].}
+\item{r}{Data-generating relatedness parameter, i.e. \eqn{r} in [1].}
 
 \item{epsilon}{Genotyping error, i.e. \eqn{\epsilon} in [1]. The genotyping
 error is the probability of miscalling one specific allele for another. As
