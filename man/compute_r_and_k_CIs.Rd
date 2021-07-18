@@ -12,6 +12,7 @@ compute_r_and_k_CIs(
   confidence = 95,
   nboot = 100,
   core_count = parallel::detectCores() - 1,
+  warn_fs = TRUE,
   ...
 )
 }
@@ -51,6 +52,9 @@ prolong computation.}
 \item{core_count}{Number of cores to use to do computation. Set to 2 or more
 for parallel computation. Defaults to the number detected on the machine
 minus one.}
+
+\item{warn_fs}{Logical indicating if the function should return warnings
+following allele frequency checks.}
 
 \item{...}{Arguments to be passed to \code{\link{simulate_Ys}} and
 \code{\link{estimate_r_and_k}}.}

@@ -15,7 +15,7 @@ Description: An R package to judge the performance of a panel of genetic markers
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 LinkingTo: 
     Rcpp
 Imports: 

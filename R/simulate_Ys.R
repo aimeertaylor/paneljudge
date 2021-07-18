@@ -23,8 +23,8 @@
 #'   different markers are also considered infinite, i.e. if the chromosome of
 #'   marker \eqn{t+1} is not equal to the chromosome of \eqn{t}-th marker,
 #'   \code{ds[t] = Inf}.
-#' @param k data-generating switch rate parameter, i.e. \eqn{k} in [1].
-#' @param r data-generating relatedness parameter, i.e. \eqn{r} in [1].
+#' @param k Data-generating switch rate parameter, i.e. \eqn{k} in [1].
+#' @param r Data-generating relatedness parameter, i.e. \eqn{r} in [1].
 #' @param epsilon Genotyping error, i.e. \eqn{\epsilon} in [1]. The genotyping
 #'   error is the probability of miscalling one specific allele for another. As
 #'   such, the error rate for the t-th marker, \eqn{(Kt-1)\epsilon}, scales with
@@ -34,6 +34,8 @@
 #'   constant across the genome under the HMM of [1]. Its default value
 #'   corresponds to an average rate estimated for \emph{Plasmodium falciparum}
 #'   [2].
+#' @param warn_fs Logical indicating if the function should return warnings
+#'   following allele frequency checks.
 #'
 #' @return Simulated genotype calls for a pair of haploid genotypes, i.e. the
 #'   \eqn{Yt}s of the \eqn{i}-th and \eqn{j}-th haploid genotypes in [1].
@@ -55,9 +57,10 @@
 #'   research, 26(9), pp.1288-1299.}
 #' @export
 ###########################################################################
-simulate_Ys <- function(fs, ds, k, r, epsilon = 0.001, rho = 7.4 * 10 ^ (-7)) {
+simulate_Ys <- function(fs, ds, k, r, epsilon = 0.001, rho = 7.4 * 10 ^ (-7),
+                        warn_fs = TRUE) {
 
-  fs_checks(fs) # Check frequencies
+  fs_checks(fs, warn = warn_fs) # Check frequencies
   m <- dim(fs)[1] # Extract marker count
   Kmax <- dim(fs)[2] # Extract Kmax
   Ys <- matrix(NA, nrow = m, ncol = 2) # Create simulated data store

@@ -11,7 +11,8 @@ estimate_r_and_k(
   epsilon = 0.001,
   rho = 7.4 * 10^(-7),
   kinit = 50,
-  rinit = 0.5
+  rinit = 0.5,
+  warn_fs = TRUE
 )
 }
 \arguments{
@@ -59,6 +60,9 @@ the negative loglikelihood.}
 
 \item{rinit}{Relatedness parameter value used to initialise optimization of
 the negative loglikelihood.}
+
+\item{warn_fs}{Logical indicating if the function should return warnings
+following allele frequency checks.}
 }
 \value{
 Maximum likelihood estimates of the switch rate parameter, \eqn{k},

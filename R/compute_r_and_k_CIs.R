@@ -41,6 +41,8 @@
 #' @param core_count Number of cores to use to do computation. Set to 2 or more
 #'   for parallel computation. Defaults to the number detected on the machine
 #'   minus one.
+#' @param warn_fs Logical indicating if the function should return warnings
+#'   following allele frequency checks.
 #' @param ... Arguments to be passed to \code{\link{simulate_Ys}} and
 #'   \code{\link{estimate_r_and_k}}.
 #'
@@ -67,10 +69,12 @@
 #' @export
 ###########################################################################
 compute_r_and_k_CIs <- function(fs, ds, khat, rhat, confidence = 95, nboot = 100,
-                                core_count = parallel::detectCores() - 1, ...) {
+                                core_count = parallel::detectCores() - 1,
+                                warn_fs = TRUE,
+                                ...) {
 
   # Check frequencies
-  fs_checks(fs)
+  fs_checks(fs, warn = warn_fs)
 
   # Retrieve all additional parameters
   all_params <- list(...)

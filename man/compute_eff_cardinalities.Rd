@@ -4,7 +4,7 @@
 \alias{compute_eff_cardinalities}
 \title{Compute marker effective cardinalities}
 \usage{
-compute_eff_cardinalities(fs)
+compute_eff_cardinalities(fs, warn_fs = TRUE)
 }
 \arguments{
 \item{fs}{Matrix of marker allele frequencies, i.e. the \eqn{ft}s in [1].
@@ -15,6 +15,9 @@ maximum cardinality exceeds that of the \eqn{t}-th marker (i.e. if
 \eqn{Kmax > Kt}), then all \code{fs[t,1:Kt]} are in (0,1) and all
 \code{fs[t,(Kt+1):Kmax]} are zero. For example, if \eqn{Kt = 2} and
 \eqn{Kmax = 4} then \code{fs[t,]} might look like \code{[0.3, 0.7, 0, 0]}.}
+
+\item{warn_fs}{Logical indicating if the function should return warnings
+following allele frequency checks.}
 }
 \value{
 Effective cardinalities for \eqn{t = 1,\ldots,m} markers.

@@ -4,7 +4,7 @@
 \alias{simulate_Ys}
 \title{Simulate genotype calls for a pair of haploid genotypes}
 \usage{
-simulate_Ys(fs, ds, k, r, epsilon = 0.001, rho = 7.4 * 10^(-7))
+simulate_Ys(fs, ds, k, r, epsilon = 0.001, rho = 7.4 * 10^(-7), warn_fs = TRUE)
 }
 \arguments{
 \item{fs}{Matrix of marker allele frequencies, i.e. the \eqn{ft}s in [1].
@@ -40,6 +40,9 @@ corresponds to the probability of a crossover per base pair. It is assumed
 constant across the genome under the HMM of [1]. Its default value
 corresponds to an average rate estimated for \emph{Plasmodium falciparum}
 [2].}
+
+\item{warn_fs}{Logical indicating if the function should return warnings
+following allele frequency checks.}
 }
 \value{
 Simulated genotype calls for a pair of haploid genotypes, i.e. the

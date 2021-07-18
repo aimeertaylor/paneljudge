@@ -16,6 +16,8 @@
 #'   \eqn{Kmax > Kt}), then all \code{fs[t,1:Kt]} are in (0,1) and all
 #'   \code{fs[t,(Kt+1):Kmax]} are zero. For example, if \eqn{Kt = 2} and
 #'   \eqn{Kmax = 4} then \code{fs[t,]} might look like \code{[0.3, 0.7, 0, 0]}.
+#' @param warn_fs Logical indicating if the function should return warnings
+#'   following allele frequency checks.
 #'
 #' @return Effective cardinalities for \eqn{t = 1,\ldots,m} markers.
 #'
@@ -28,8 +30,8 @@
 #'
 #' @export
 ###########################################################################
-compute_eff_cardinalities <- function(fs) {
-  fs_checks(fs) # Check frequencies
+compute_eff_cardinalities <- function(fs, warn_fs = TRUE) {
+  fs_checks(fs, warn = warn_fs) # Check frequencies
   eff_cardinalities <- 1 / rowSums(fs^2)
   return(eff_cardinalities)
 }
@@ -51,6 +53,8 @@ compute_eff_cardinalities <- function(fs) {
 #'   \eqn{Kmax > Kt}), then all \code{fs[t,1:Kt]} are in (0,1) and all
 #'   \code{fs[t,(Kt+1):Kmax]} are zero. For example, if \eqn{Kt = 2} and
 #'   \eqn{Kmax = 4} then \code{fs[t,]} might look like \code{[0.3, 0.7, 0, 0]}.
+#' @param warn_fs Logical indicating if the function should return warnings
+#'   following allele frequency checks.
 #'
 #' @return Diversities for \eqn{t = 1,\ldots,m} markers.
 #'
@@ -63,8 +67,8 @@ compute_eff_cardinalities <- function(fs) {
 #'
 #' @export
 ###########################################################################
-compute_diversities <- function(fs) {
-  fs_checks(fs) # Check frequencies
+compute_diversities <- function(fs, warn_fs = TRUE) {
+  fs_checks(fs, warn = warn_fs) # Check frequencies
   diversities <- 1 - rowSums(fs^2)
   return(diversities)
 }
