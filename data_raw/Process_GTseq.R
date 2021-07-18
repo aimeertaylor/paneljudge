@@ -35,8 +35,11 @@
 #
 # ******************************* IMPORTANT ********************************
 # In the following we refer to Tim's Genotype.1 as Allele.1 etc. As mentioned
-# above, alleles per marker are ordered by their frequencies (this is a compute
-# requirement of the HMM of [1], not a statistical requirement; statistically,
+# above, alleles per marker are ordered by their frequencies. More
+# specifically, non-zero frequencies must precede zero frequencies
+# (additionally in this example analysis, non-zero frequencies monotonically
+# decrease). Non-zero frequencies preceding zero frequencies is a compute
+# requirement of the HMM of [1], not a statistical requirement (statistically,
 # alleles under the HMM of [1] are modelled as realisations of unordered
 # categorgical random variables). As such, the names of the alleles per marker
 # (Allele.1, Allele.2, etc.) likely correspond to different microhaplotype
@@ -52,12 +55,16 @@ require(plyr) # for dlply
 
 if(exists("markers")){
   stop("Before running this script, ensure paneljudge isn't attached
-       (e.g. via devtools::load_all())), otherwise problems with duplicate
-       names markers and frequencies")
+       (e.g. attached via devtools::load_all())), otherwise problems
+       with duplicate names markers and frequencies")
 }
 
 # Set working directory to this file location and load example raw input data
 amp_frqs = readRDS('amp_frqs.rds')
+
+# Frequencies do not sum to one exactly
+freq_sum_range <- range(rowSums(amp_frqs[,grepl("Allele.", colnames(amp_frqs))]))
+max(abs(freq_sum_range-1)) # Maximum deviation
 
 # Convert factor columns. Do not use apply (e.g. apply(amp_frqs, 2, is.factor))
 # since apply converts data.frame to matrix and surreptitiously convert factors
@@ -101,10 +108,7 @@ for(chr in sort(unique(markers$chrom))){
 
 # Check re-ordered data: returns TRUE if ordered correctly
 markers = do.call(rbind, reordered_data_list)
-all(sapply(unique(markers$chrom), function(chr){
-  x = markers$pos[chr == markers$chrom]
-  all(x == cummax(x))
-}))
+all(sapply(split(markers$pos, markers$chrom),function(x) all(x == cummax(x))))
 
 # Compute distances between middle positions
 markers$distances <- c(diff(markers$pos), Inf)
