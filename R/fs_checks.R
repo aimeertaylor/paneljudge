@@ -15,6 +15,14 @@ fs_checks <- function(fs, warn,
   # Convert fs into numeric logic for zero/non-zero
   fs01 <- 1 * (fs > non_zero_fs_lb)
 
+  # Check frequencies are in [0,1]
+  # Those that exceed one do not break the hmmloglikelihood.cpp code so are liable to go undetected
+  # Those that are negative break the hmmloglikelihood.cpp code
+  # Those that are negative also trigger error below due to cummin so this check precedes one below
+  if(any(fs < 0) | any(fs > 1)) {
+    stop("Some frequencies are not in [0,1].", call. = FALSE)
+  }
+
   # Check for disordered frequencies.
   # Specifically, check fs ordered s.t. non-zero precede zero for all markers.
   # Disordered frequencies break the hmmloglikelihood.cpp code.
@@ -38,12 +46,7 @@ fs_checks <- function(fs, warn,
     }
   }
 
-  # Check frequencies are in [0,1]
-  # Those that exceed one do not break the hmmloglikelihood.cpp code so are liable to go undetected
-  # Those that are negative break the hmmloglikelihood.cpp code
-  if(any(fs < 0) | any(fs > 1)) {
-    stop("Some frequencies are not in [0,1].", call. = FALSE)
-  }
+
 
   # Check for uninformative markers
   # These markers do not break the hmmloglikelihood.cpp code but could be omitted.
