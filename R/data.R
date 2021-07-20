@@ -25,7 +25,7 @@
 #'   \eqn{Kmax} is the maximum cardinality (per-marker allele count) observed
 #'   over all \eqn{m} markers. If, for any \eqn{t = 1,...,m}, the maximum
 #'   cardinality exceeds that of the \eqn{t}-th marker (i.e. if \eqn{Kmax >
-#'   Kt}), then all \code{fs[t,1:Kt]} are in (0,1) and all
+#'   Kt}), then all \code{fs[t,1:Kt]} are in (0,1] and all
 #'   \code{fs[t,(Kt+1):Kmax]} are zero. For example, for PF3D7_0103600 in Colombia, \eqn{Kt
 #'   = 2} and \code{frequencies$Colombia["PF3D7_0103600",] = (0.687075, 0.312925, 0, ..., 0)}.
 #'   \describe{

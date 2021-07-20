@@ -22,8 +22,8 @@ maximum cardinality exceeds that of the \eqn{t}-th marker (i.e. if
 such that \code{ds[m] = Inf}, where \eqn{m} is the marker count. (Note that
 this differs slightly from [1], where \code{ds[t]} contains the distance
 between marker \eqn{t-1} and \eqn{t}). Distances between markers on
-different markers are also considered infinite, i.e. if the chromosome of
-marker \eqn{t+1} is not equal to the chromosome of \eqn{t}-th marker,
+different chromosomes are also considered infinite, i.e. if the chromosome of
+marker \eqn{t+1} is not equal to the chromosome of the \eqn{t}-th marker,
 \code{ds[t] = Inf}.}
 
 \item{k}{Data-generating switch rate parameter, i.e. \eqn{k} in [1].}

@@ -15,7 +15,7 @@ csl: vancouver.csl
 
 In this vignette, to illustrate the functionality of the R package **paneljudge**, we inspect the performance of an example panel using example marker allele frequencies based on *Plasmodium falciparum* data from Colombia. Example frequencies are distributed with the package; data used to estimate them are not.   
 
-First we provide a summary of the example panel in terms of its marker count, and its markers' positions, diversities, effective cardinalities and cardinalities. These quantities provide a rough idea of how informative the panel is regarding relatedness inference @taylor2019. Second, we simulate and fit data under the hidden Markov model (HMM) described in @taylor2019. The second step provides a more direct summary of how informative the panel is regarding relatedness inference. 
+First we provide a summary of the example panel in terms of its marker count, and its markers' positions, diversities, effective cardinalities and cardinalities. These quantities provide a rough idea of how informative the panel is regarding relatedness inference @taylor2019. Second, we simulate and fit data under the hidden Markov model (HMM) described in @taylor2019. The second step provides a more direct summary of how informative the panel is regarding relatedness inference. In the first step, the function compute_diversities() returns a warning about allele frequencies not quite summing to one and about some markers being uninformative. Since we deem neither to be problematic, we suppress warnings in the rest of the examples. 
 
 At present, our example analyses do not consider model specification; do not account for uncertainty around input allele frequency estimates; do not consider relatedness between pairs of haploid genotypes simulated using different allele frequencies; do not account for missing marker data. Otherwise stated, at present, the performance of a panel is judged in its most favourable light; it will likely perform less well in reality.
 
@@ -23,7 +23,7 @@ To view all the source code for this vignette, including that used to generate t
 
 ## Glossary
 
-In this vignette, a "marker" refers to a genetic polymorphism that can be typed in order to characterise population genetic variation, while "allele" is used to refer to a realisation of a marker for a particular individual. Examples of markers include single nucleotide polmorphisms (SNPs), microsatellites, and microhaplotype markers. The latter refers to a region of the genome that spans two or more contiguous SNPs and is small enough to be typed using an amplicon (a chemical by-product of genotyping, not a biological entity, used to type single SNPs as well as SNP multiplets). Examples of alleles include a nucleotide at a SNP, an amino acid at a non-synonymous SNP, a repeat length at a microsatellite and a sequence of nucleotides at a microhaplotype marker. Arguably, one could use SNP multiplet to refer to a marker that spans two more SNPs, and microhaplotype to refer to an allele at a marker that spans two more SNPs. However, for consistency with @taylor2019, microhaplotype is used to refer to marker spanning two or more contiguous SNPs.  
+In this vignette, a "marker" refers to a genetic polymorphism that can be typed in order to characterise population genetic variation, while "allele" is used to refer to a realisation of a marker for a particular individual. Examples of markers include single nucleotide polmorphisms (SNPs), microsatellites, and microhaplotype markers. The latter refers to a region of the genome that spans two or more contiguous SNPs and is small enough to be typed using an amplicon (a chemical by-product of genotyping, not a biological entity, used to type single SNPs as well as SNP multiplets). Examples of alleles include a nucleotide at a SNP, an amino acid at a non-synonymous SNP, a repeat length at a microsatellite and a sequence of nucleotides at a microhaplotype marker. Arguably, one could use SNP multiplet to refer to a marker that spans two more SNPs, and microhaplotype to refer to an allele at a marker that spans two more SNPs. However, for consistency with @taylor2019, microhaplotype is used to refer to a marker spanning two or more contiguous SNPs.  
 
 We use "markers" and "alleles" in order to be as general as possible. The HMM on which package **paneljudge** relies does not care if markers are SNPs, microsatellites or microhaplotypes as long as they can be modelled as categorical random variables whose realisations (i.e. alleles) are unordered. To this end, microsatellites and microhaplotypes are treated as point polymorphisms and their alleles are enumerated. Enumeration serves only to label the realisations. As such, the ordinal nature of microsatellite alleles is not accounted for even if repeat lengths are enumerated in increasing order. 
 
@@ -105,7 +105,7 @@ Next we compute marker diversity, effective cardinality, cardinality and maximum
 ```{r, echo = T}
 # Compute marker summaries using paneljudge functions 
 diversities <- compute_diversities(frequencies$Colombia)
-eff_cardinalities <- compute_eff_cardinalities(frequencies$Colombia)
+eff_cardinalities <- compute_eff_cardinalities(frequencies$Colombia,  warn_fs = FALSE)
 
 # Per-marker allele count:
 cardinalities <- apply(frequencies$Colombia, 1, function(x){sum(x > 0)}) 
@@ -160,7 +160,7 @@ text(x = 2687330, y = 4.7, labels = 'Effective cardinality', srt = 90)
 ```
 
 
-Both marker diversity and effective cardinality are measures of marker informativeness regarding relatedness inference. Personally, I find effective cardinality more intuitive because potential effective cardinality scales linearly with cardinality, whereas potential diversity does not. Otherwise stated, diversity is less convenient because its range of possible values does not scale linearly with cardinality, making diversity hard to compare across markers with different cardinalities. The average effective cardinality multiplied by marker count, `r round(mean(eff_cardinalities) * m)`, provides a rough summary of the informativeness of the entire panel. 
+Both marker diversity and effective cardinality are measures of marker informativeness regarding relatedness inference. Personally, I find effective cardinality more intuitive because potential effective cardinality scales linearly with cardinality, whereas potential diversity does not. Otherwise stated, diversity is less convenient because its range of possible values does not scale linearly with cardinality, making diversity hard to compare across markers with different cardinalities. The average effective cardinality multiplied by marker count, `r round(mean(eff_cardinalities) * m)` in this case, provides a rough summary of the informativeness of the entire panel. 
 
 
 ```{r}
@@ -219,13 +219,13 @@ mle_CIs <- lapply(rs, function(r) {
   sapply(1:n, function(i) {
 
     # First simulate genotype pair
-    Ys <- simulate_Ys(fs, ds, k, r)
+    Ys <- simulate_Ys(fs, ds, k, r, warn_fs = FALSE)
 
     # Second, estimate r and k
-    krhat <- estimate_r_and_k(fs, ds, Ys)
+    krhat <- estimate_r_and_k(fs, ds, Ys, warn_fs = FALSE)
 
     # Third, compute confidence intervals (CIs)
-    CIs <- compute_r_and_k_CIs(fs, ds, khat = krhat['khat'], rhat = krhat['rhat'])
+    CIs <- compute_r_and_k_CIs(fs, ds, khat = krhat['khat'], rhat = krhat['rhat'],  warn_fs = FALSE)
 
     # End of function
     return(c(krhat['rhat'], CIs['rhat',]))

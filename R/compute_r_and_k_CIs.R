@@ -8,9 +8,9 @@
 #' They are generated using parametric bootstrap draws of the parameter
 #' estimates based on genotype calls for haploid genotype pairs simulated under
 #' the HMM described in [1] using the input parameter estimates. The quality of
-#' the approximation increases and compute time scales with the number of
-#' parametric bootstrap draws, which are generated in parallel using a specified
-#' number of cores.
+#' the approximation and compute time increases with the number of parametric
+#' bootstrap draws, which are generated in parallel using a specified number of
+#' cores.
 #'
 #' @param fs Matrix of marker allele frequencies, i.e. the \eqn{ft}s in [1].
 #'   Specifically, a \eqn{m} by \eqn{Kmax} matrix, where \eqn{m} is the marker
@@ -26,14 +26,14 @@
 #'   such that \code{ds[m] = Inf}, where \eqn{m} is the marker count. (Note that
 #'   this differs slightly from [1], where \code{ds[t]} contains the distance
 #'   between marker \eqn{t-1} and \eqn{t}). Distances between markers on
-#'   different markers are also considered infinite, i.e. if the chromosome of
-#'   marker \eqn{t+1} is not equal to the chromosome of \eqn{t}-th marker,
+#'   different chromosomes are also considered infinite, i.e. if the chromosome of
+#'   marker \eqn{t+1} is not equal to the chromosome of the \eqn{t}-th marker,
 #'   \code{ds[t] = Inf}.
 #' @param khat Estimate of the switch rate parameter, i.e. estimate of \eqn{k}
 #'   in [1].
 #' @param rhat Estimate of the relatedness parameter, i.e. estimate of \eqn{r}
 #'   in [1].
-#' @param confidence Confidence level (percentage) of confidence interval
+#' @param confidence Confidence level (percentage) of the confidence interval
 #'   (default 95\%).
 #' @param nboot Number of parametric bootstrap draws from which to compute the
 #'   confidence interval. Larger values provide a better approximation but
