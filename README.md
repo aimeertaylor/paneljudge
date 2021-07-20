@@ -51,14 +51,18 @@ edit(vignette("paneljudge_example"))
 ?paneljudge::markers
 ?paneljudge::frequencies
 
-# Try all the functions using example frequencies and inter-marker distances
+
+
+#===============================================================================
+# Example of each function using example frequencies and inter-marker distances
+#===============================================================================
 
 # Compute diversities and effective cardinalities
 compute_diversities(fs = frequencies$Colombia)
 compute_eff_cardinalities(fs = frequencies$Colombia)
 
 # Stimulate some data
-simulated_Ys <- simulate_Ys(fs = frequencies$Colombia, ds = markers$distances)
+simulated_Ys <- simulate_Ys(fs = frequencies$Colombia, ds = markers$distances, r = 0.25, k = 5)
 
 # Estimate the switch rate parameter, k, and relatedness parameter, r
 krhat <- estimate_r_and_k(fs = frequencies$Colombia, ds = markers$distances, Ys = simulated_Ys)
