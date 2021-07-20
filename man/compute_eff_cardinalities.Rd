@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_marker_summaries.R
 \name{compute_eff_cardinalities}
 \alias{compute_eff_cardinalities}
-\title{Compute marker effective cardinalities}
+\title{Function to compute marker effective cardinalities}
 \usage{
 compute_eff_cardinalities(fs, warn_fs = TRUE)
 }

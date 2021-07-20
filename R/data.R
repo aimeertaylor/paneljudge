@@ -1,4 +1,4 @@
-#' Markers of the example GTseq panel.
+#' Data on markers of the example GTseq panel.
 #'
 #' A data set of marker attributes for markers pertaining to the example GTseq panel.
 #'
@@ -16,7 +16,7 @@
 #' @source see \url{https://github.com/artaylor85/paneljudge/blob/master/data_raw/Process_GTseq.R}
 "markers"
 
-#' Allele frequencies of the example GTseq panel.
+#' Data on allele frequencies of the example GTseq panel.
 #'
 #' A data set of allele frequencies for four countries: Colombia, French Guiana, Mali and Sengal.
 #'
@@ -36,7 +36,7 @@
 #' @source see \url{https://github.com/artaylor85/paneljudge/blob/master/data_raw/Process_GTseq.R}
 "frequencies"
 
-#' Chromosome lengths.
+#' Data on chromosome lengths.
 #'
 #' Lengths in base pairs of chromosomes Pf3D7_01_v3 to Pf3D7_14_v3 of the 3D7
 #' Plasmodium falciparum reference genome listed on PlasmoDB (see url below).

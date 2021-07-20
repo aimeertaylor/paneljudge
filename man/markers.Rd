@@ -3,7 +3,7 @@
 \docType{data}
 \name{markers}
 \alias{markers}
-\title{Markers of the example GTseq panel.}
+\title{Data on markers of the example GTseq panel.}
 \format{
 A data frame with 126 rows and 8 variables:
 \describe{

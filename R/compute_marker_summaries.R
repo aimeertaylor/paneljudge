@@ -1,5 +1,5 @@
 ###########################################################################
-#' Compute marker effective cardinalities
+#' Function to compute marker effective cardinalities
 #'
 #' Given a matrix of marker allele frequencies,
 #' \code{compute_eff_cardinalities} returns the effective cardinalites of
@@ -38,7 +38,7 @@ compute_eff_cardinalities <- function(fs, warn_fs = TRUE) {
 
 
 ###########################################################################
-#' Compute marker diversities
+#' Function to compute marker diversities
 #'
 #' Given a matrix of marker allele frequencies, \code{compute_diversities}
 #' returns the diversities of \eqn{t = 1,...,m} markers, where \eqn{m} is the

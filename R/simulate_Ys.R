@@ -1,5 +1,5 @@
 ###########################################################################
-#' Simulate genotype calls for a pair of haploid genotypes
+#' Function to simulate genotype calls for a pair of haploid genotypes
 #'
 #' Given a matrix of marker allele frequencies, a vector of inter-marker
 #' distances, a relatedness parameter, and a switch rate parameter, for a pair

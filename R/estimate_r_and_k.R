@@ -1,5 +1,5 @@
 ###########################################################################
-#' Estimate relatedness and switch rate parameters
+#' Function to estimate relatedness and switch rate parameters
 #'
 #' Given a matrix of marker allele frequencies, a vector of inter-marker
 #' distances, and a matrix of genotype calls for a pair of haploid genotypes,

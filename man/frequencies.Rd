@@ -3,7 +3,7 @@
 \docType{data}
 \name{frequencies}
 \alias{frequencies}
-\title{Allele frequencies of the example GTseq panel.}
+\title{Data on allele frequencies of the example GTseq panel.}
 \format{
 Each entry of the list is a matrix, \code{fs} say, with \eqn{m=126}
   rows and \eqn{Kmax=44} variables, where \eqn{m} is the marker count and

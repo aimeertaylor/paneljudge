@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_marker_summaries.R
 \name{compute_diversities}
 \alias{compute_diversities}
-\title{Compute marker diversities}
+\title{Function to compute marker diversities}
 \usage{
 compute_diversities(fs, warn_fs = TRUE)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimate_r_and_k.R
 \name{estimate_r_and_k}
 \alias{estimate_r_and_k}
-\title{Estimate relatedness and switch rate parameters}
+\title{Function to estimate relatedness and switch rate parameters}
 \usage{
 estimate_r_and_k(
   fs,

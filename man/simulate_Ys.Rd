@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulate_Ys.R
 \name{simulate_Ys}
 \alias{simulate_Ys}
-\title{Simulate genotype calls for a pair of haploid genotypes}
+\title{Function to simulate genotype calls for a pair of haploid genotypes}
 \usage{
 simulate_Ys(fs, ds, k, r, epsilon = 0.001, rho = 7.4 * 10^(-7), warn_fs = TRUE)
 }

@@ -3,7 +3,7 @@
 \docType{data}
 \name{chr_lengths}
 \alias{chr_lengths}
-\title{Chromosome lengths.}
+\title{Data on chromosome lengths.}
 \format{
 A numeric vector named by the chromosome number.
 }

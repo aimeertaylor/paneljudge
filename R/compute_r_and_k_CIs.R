@@ -1,5 +1,5 @@
 ###########################################################################
-#' Compute confidence intervals for relatedness and switch rate parameters
+#' Function to compute confidence intervals for relatedness and switch rate parameters
 #'
 #' Given a matrix of marker allele frequencies, a vector of inter-marker
 #' distances, and estimates of the relatedness and switch rate parameters,

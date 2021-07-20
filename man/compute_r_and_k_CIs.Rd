@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_r_and_k_CIs.R
 \name{compute_r_and_k_CIs}
 \alias{compute_r_and_k_CIs}
-\title{Compute confidence intervals for relatedness and switch rate parameters}
+\title{Function to compute confidence intervals for relatedness and switch rate parameters}
 \usage{
 compute_r_and_k_CIs(
   fs,
