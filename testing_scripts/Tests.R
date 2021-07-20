@@ -73,6 +73,10 @@ set.seed(1)
 simulated_Ys <- simulate_Ys(fs, ds, k = 5, r = 0.25, warn_fs = FALSE, epsilon = 0.5)
 krhat <- estimate_r_and_k(fs, ds, Ys = simulated_Ys, warn_fs = FALSE, epsilon = 0)
 
+# NAs in Ys check
+simulated_Ys[1,1] <- NA
+krhat <- estimate_r_and_k(fs, ds, Ys = simulated_Ys, warn_fs = FALSE, epsilon = 0)
+
 
 set.seed(1)
 fs <- frequencies$Colombia
