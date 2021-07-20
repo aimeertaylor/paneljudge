@@ -83,7 +83,7 @@ simulated_Ys <- simulate_Ys(fs = frequencies$Colombia, ds = markers$distances, k
 krhat <- estimate_r_and_k(fs = frequencies$Colombia, ds = markers$distances, Ys = simulated_Ys)
 
 # Third, compute confidence intervals (CIs)
-compute_r_and_k_CIs(frequencies$Colombia, markers$distances, khat = krhat['khat'], rhat = krhat['rhat'])
+compute_r_and_k_CIs(fs = frequencies$Colombia, ds = markers$distances, khat = krhat['khat'], rhat = krhat['rhat'])
 
 }
 \references{
